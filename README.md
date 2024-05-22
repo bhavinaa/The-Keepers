@@ -3,7 +3,7 @@
 ---
 
 #### Team Name: The Keepers
-#### Members: Bhavina and Saahana
+#### Members: Bhavina and Sahana
 
 #### Proposed Level of Achievement: Apollo 11
 
@@ -80,21 +80,26 @@ The motivation behind creating a gamified productivity app for university studen
    - Allow users to form study groups for collaborative tasks and extra points.
    - Integrate the Pomodoro technique for study sessions, with customizable intervals for study and breaks.
 
-Full Tech Stack
+### Testing
+
+### Posters and Video for submission
+
+###Full Tech Stack
 Frontend Development:
 
 JavaScript Framework: React Native
 Navigation: React Navigation
 State Management: Redux or Context API
 Styling: CSS with StyleSheet
-Backend Development:
+
+###Backend Development:
 
 Serverless Backend: Firebase
 Database: Firestore
 Authentication: Firebase Authentication
 Additional Tools and Libraries:
 
-Testing Framework: Jest and React Testing Library
+### Testing Framework: Jest and React Testing Library
 IDE: Visual Studio Code
 Figma: Designing of the UI 
 

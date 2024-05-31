@@ -5,6 +5,8 @@ import { StyleSheet, Text, View, ImageBackground} from 'react-native';
 import { Button, TextInput,ScrollView } from 'react-native';
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 
@@ -18,13 +20,13 @@ const firebaseConfig = {
 };
 
 
-const app = initializeApp(firebaseConfig);
 
+const app = initializeApp(firebaseConfig);
+const image = {uri:'./src/Layouts/the_background.png'};
 const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
   return (
     <View style={styles.authContainer}>
        <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
-
        <TextInput
         style={styles.input}
         value={email}
@@ -102,6 +104,7 @@ export default App = () => {
   }; 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
       {user ? (
         // Show user's email if user is authenticated
         <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
@@ -117,9 +120,12 @@ export default App = () => {
           handleAuthentication={handleAuthentication}
         />
       )}
+      </ImageBackground>
     </ScrollView>
   );
 }
+
+<Image source={require('./src/Layouts/the_background.png')} />
 
 const styles = StyleSheet.create({
   container: {

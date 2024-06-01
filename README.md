@@ -49,22 +49,12 @@ The motivation behind creating a gamified productivity app for university studen
    - Enable users to group tasks based on categories such as workout, study, etc.
    - Allow creation of personalized checklists for each task.
 
-3. **Difficulty and Duration Ranking:**
-   - Implement a ranking system for tasks based on difficulty and duration.
-   - Assign points to tasks based on their difficulty and duration.
+3. **Pomaddaro Timers**
+   - Enable users to compartamalise and track their study sessions
 
-4. **Importance Ranking and Task Prioritization:**
-   - Allow users to rank tasks by order of importance.
-   - Provide features to prioritize tasks based on their importance levels.
-
-5. **Task Scheduling:**
-   - Enable users to create tasks that repeat on a customizable basis.
-   - Allow customization of reminders for each task.
-
-6. **Reward System and Accountability Boost:**
+4.  **Reward System 
    - Implement a reward system where users earn coins or gems upon completing tasks.
-   - Enable users to unlock collectibles using earned rewards.
-   - Allow users to share schedules and goals with friends for group accountability.
+   
 
 #### Extension Features:
 
@@ -72,9 +62,8 @@ The motivation behind creating a gamified productivity app for university studen
    - Provide monthly challenges for users to build habits and achieve specific goals.
    - Encourage users to set aside dedicated time for completing activities related to monthly challenges.
 
-8. **Extra Challenges and Points:**
-   - Offer additional challenges like 75-day challenges for extra points and rewards.
-   - Motivate users with daily inspirational quotes to stay focused on their tasks and challenges.
+8. **Spaced Repetition tool**
+   - Helps you keep track of the content you have to study, so you would be able to commit it to your long term memory
 
 9. **Study Group and Pomodoro Technique:**
    - Allow users to form study groups for collaborative tasks and extra points.
@@ -82,14 +71,42 @@ The motivation behind creating a gamified productivity app for university studen
 
 ### Testing
 
-### Posters and Video for submission
+What to expect!
+We have curently added the log in authentication feature that allows new users to register and an existing user to log in.
+We are planning to enhance the UI/UX and implement the other specific features for the project by the next milestone
 
-###Full Tech Stack
+pre-requisites 
+download and set up the Android virtual environment 
+
+IDE / Code Editor
+
+Clone the repository.
+Install Node.js, if you haven't.
+CD into the project folder.
+Run npm install to install all dependencies.
+Run npx expo start to start the project in development mode
+
+Test Account
+email: abc1@gmail.com
+password: 123456
+
+If you want to sign up you can create a new account overall
+
+TroubleShooting tips
+If you encounter any error while running the application clear the cache using the command:
+1. npx expo start -c (in the terminal)
+2. wipe data from the android virtual debugger 
+
+
+### Posters and Video for submission
+~ to update skylab
+
+Full Tech Stack
 Frontend Development:
 
 JavaScript Framework: React Native
 Navigation: React Navigation
-State Management: Redux or Context API
+State Management: React Context 
 Styling: CSS with StyleSheet
 
 ###Backend Development:
@@ -97,9 +114,10 @@ Styling: CSS with StyleSheet
 Serverless Backend: Firebase
 Database: Firestore
 Authentication: Firebase Authentication
-Additional Tools and Libraries:
 
-### Testing Framework: Jest and React Testing Library
+Additional Tools and Libraries: 
+
+###Testing Framework: Jest and React Testing Library
 IDE: Visual Studio Code
 Figma: Designing of the UI 
 

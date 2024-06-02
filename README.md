@@ -72,23 +72,24 @@ The motivation behind creating a gamified productivity app for university studen
 ### Testing
 
 What to expect!
+
 We have curently added the log in authentication feature that allows new users to register and an existing user to log in.
 We are planning to enhance the UI/UX and implement the other specific features for the project by the next milestone
 
 pre-requisites 
-download and set up the Android virtual environment 
+1. download and set up the Android virtual environment 
 
 IDE / Code Editor
 
-Clone the repository.
-Install Node.js, if you haven't.
-CD into the project folder.
-Run npm install to install all dependencies.
-Run npx expo start to start the project in development mode
+1. Clone the repository.
+2. Install Node.js, if you haven't.
+3. CD into the project folder.
+4. Run npm install to install all dependencies.
+5. Run npx expo start to start the project in development mode
 
 Test Account
-email: abc1@gmail.com
-password: 123456
+- email: abc1@gmail.com
+- password: 123456
 
 If you want to sign up you can create a new account overall
 
@@ -117,7 +118,18 @@ Authentication: Firebase Authentication
 
 Additional Tools and Libraries: 
 
+In progress work ~ 
 ###Testing Framework: Jest and React Testing Library
+
 IDE: Visual Studio Code
 Figma: Designing of the UI 
+
+
+Revision History 
+
+- Relase 1.0
+  Features
+  1. login
+  2. sign up 
+
 

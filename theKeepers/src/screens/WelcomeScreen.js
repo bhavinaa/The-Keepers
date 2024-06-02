@@ -53,6 +53,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 84, // Adjust this value to move content down from the top
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 0,
+  },
+  buttonsContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20, // value to move buttons up or down
   },
   title: {
     fontSize: 56,
@@ -60,6 +69,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     marginBottom: 20,
+    marginBottom: 30,
+    textAlign: 'center', // Ensures text alignment in the text component itself
+    color: '#fff', // Change 
+    //fontFamily? not rlly sure yet 
+  },
+  copyright: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center', // Ensures text alignment in the text component itself
+    color: '#fff' // Change 
+    //fontFamily? not rlly sure yet 
   },
   logo: {
     width: 150,
@@ -78,6 +99,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center the text vertically
     alignItems: 'center', // Center the text horizontally
     borderRadius: 20,
+    marginBottom: 30, // Adjust the spacing between the logo and the buttons
+    alignSelf: 'center', // Center the logo horizontally
+  },
+  button: {
+    backgroundColor: "#302298",
+    width: "90%",
+    paddingVertical: 15,
+    marginHorizontal: 15,
+    borderRadius: 8,
     marginBottom: 20,
   },
   buttonText: {
@@ -102,3 +132,9 @@ const styles = StyleSheet.create({
   },
 });
 
+    justifyContent: 'center',
+    alignItems: 'center', // Ensure content is centered horizontally
+    width: '100%',
+    height: '100%',
+  },
+});

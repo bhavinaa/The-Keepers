@@ -6,12 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView, ImageBackground,
 } from "react-native";
 
 import { authentication } from "../firebase/config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
+import {the_background} from "../assets/the_background.png";
 
 
 
@@ -35,11 +36,14 @@ export default function SignUpScreen({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
+      <View style={styles.contentContainer}>
       <Text style={styles.title}>Sign Up</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#ffffff"
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
@@ -48,6 +52,7 @@ export default function SignUpScreen({navigation}) {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#ffffff"
         secureTextEntry
         value={password}
         onChangeText={(text) => setPassword(text)}
@@ -55,6 +60,7 @@ export default function SignUpScreen({navigation}) {
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
+        placeholderTextColor="#ffffff"
         secureTextEntry
         value={confirmPassword}
         onChangeText={(text) => setConfirmPassword(text)}
@@ -73,7 +79,10 @@ export default function SignUpScreen({navigation}) {
           />
         )}
       </TouchableOpacity>
-    </View>
+      </View>
+      </ImageBackground>
+      </SafeAreaView>
+    
   );
 };
     
@@ -83,34 +92,53 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: '#fffff0',
+    textAlign: 'center', // Ensures text alignment in the text component itsel
   },
   input: {
-    width: "100%",
+    width: "100%", // Adjusted width for wider input boxes
     height: 40,
-    borderColor: "#ccc",
+    borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 5,
     marginBottom: 16,
     paddingLeft: 8,
+    paddingRight: 8,
+    color: "#ffffff",
   },
   button: {
-    backgroundColor: "#007BFF",
-    width: "100%",
-    paddingVertical: 15,
-    borderRadius: 10,
-    marginTop: 10,
+    backgroundColor: "#302298",
+    borderRadius: 20,
+    padding: 10,
+    margin: 14,
+    width: "90%", // Adjusted width for the button to match input boxes
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   buttonText: {
-    color: "#ffffff",
+    color: '#fffff0',
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
 });
 

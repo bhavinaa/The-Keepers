@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { authentication } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
+import ourLogo from '../assets/ourLogo.jpg';
+import {the_background} from "../assets/the_background.png";
 
 import {
   View,
@@ -13,10 +15,10 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 
-
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState(null);
@@ -42,110 +44,110 @@ export default function LoginScreen({navigation}) {
         setIsLoading(false); 
       });
   };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome!</Text>
-      <Image
-        source={{
-          uri: "https://ouch-cdn2.icons8.com/teMbWzQG6l5J7CQqv4TiWL2pvjv9-A1IUmfuhymu3zw/rs:fit:608:456/extend:false/wm:1:re:0:0:0.8/wmid:ouch/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9zdmcvMzIy/LzEzODJjMmMwLThj/M2YtNGQ4Yy1iODk0/LWRkYTRhMDI3ZGFl/OS5zdmc.png",
-        }}
-        style={styles.logo}
-      />
+      <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
+        <View style={styles.contentContainer}>
+          <Text style={styles.welcomeText}> The Keepers </Text>
+          <Image
+            source={require('../assets/ourLogo.jpg')}
+            style={styles.logo}
+          />  
 
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        placeholder="Enter your email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        placeholderTextColor="#003f5c"
-        value={email}
-        onChangeText={(email) => setEmail(email)}
-      />
-
-      <TextInput
-        ref={passwordRef}
-        style={styles.input}
-        placeholder="Enter your password"
-        placeholderTextColor="#003f5c"
-        value={password}
-        secureTextEntry
-        onChangeText={(text) => setPassword(text)}
-      />
-      {error && <Text style={styles.errorText}>{error}</Text>}
-
-      <TouchableOpacity onPress={handleSignIn} style={styles.button}>
-        <Text style={styles.loginText}>Login</Text>
-        {isLoading && (
-          <ActivityIndicator
-            size="small"
-            color="white"
-            style={{
-              alignSelf: "center",
-              justifyContent: "center",
-              paddingLeft: 10,
-            }}
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            placeholder="Enter your email"
+            placeholderTextColor="#ffffff"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={(email) => setEmail(email)}
           />
-        )}
-      </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
-        <Text style={styles.downText}>Don't have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("signup")}>
-          <Text style={styles.signup}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
+
+          <TextInput
+            ref={passwordRef}
+            style={styles.input}
+            placeholder="Enter your password"
+            placeholderTextColor="#ffffff"
+            value={password}
+            secureTextEntry
+            onChangeText={(text) => setPassword(text)}
+          />
+          {error && <Text style={styles.errorText}>{error}</Text>}
+
+          <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+            <Text style={styles.loginText}>Login</Text>
+            {isLoading && (
+              <ActivityIndicator
+                size="small"
+                color="white"
+                style={{
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  paddingLeft: 10,
+                }}
+              />
+            )}
+          </TouchableOpacity>
+          <View style={styles.signUpContainer}>
+            <Text style={styles.downText}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+              <Text style={styles.signup}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
+    padding: 0,
+    backgroundColor: "#ffffff",
+    paddingHorizontal: 0,
   },
   input: {
-    width: "100%",
+    width: "80%", // Adjusted width for wider input boxes
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 16,
     paddingLeft: 8,
     paddingRight: 8,
+    color: "#ffffff", // Adjusted text color to white
+    borderRadius: 5,
   },
   button: {
     backgroundColor: "#302298",
     borderRadius: 20,
     padding: 10,
     margin: 14,
-    width: "78%",
+    width: "80%", // Adjusted width for the button to match input boxes
     height: 50,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
   },
   loginText: {
-    color: "white",
+    color: '#fffff0',
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 16,
-    alignSelf: "center",
   },
   welcomeText: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 44,
+    fontWeight: "400",
+    letterSpacing: 0,
+    lineHeight: 44,
+    color: '#fffff0',
+    textAlign: 'center',
     marginBottom: 16,
-    textAlign: "center",
   },
   logo: {
     width: 150,
@@ -153,8 +155,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   downText: {
-    color: "#331ece",
     fontSize: 16,
+    color: '#fffff0',
     fontWeight: "400",
     marginTop: 10,
   },
@@ -167,4 +169,24 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginTop: 10,
   },
+  image: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    margin: 0,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+    width: '100%', // Ensures the content container takes the full width
+  },
+  signUpContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 });
+

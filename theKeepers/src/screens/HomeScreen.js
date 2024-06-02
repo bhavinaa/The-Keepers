@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground } from 'react-native';
 import { useAuth } from "../contexts/AuthContext";
 import { authentication } from "../firebase/config";
 import { signOut } from "firebase/auth";
@@ -43,5 +43,11 @@ const styles = StyleSheet.create({
   signOutText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
 });

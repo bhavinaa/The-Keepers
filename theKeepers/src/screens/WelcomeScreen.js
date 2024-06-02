@@ -50,13 +50,12 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    width: '80%',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 84, // Adjust this value to move content down from the top
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 0,
   },
   buttonsContainer: {
     width: '100%',
@@ -129,12 +128,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     paddingVertical: 20,
-  },
-});
-
-    justifyContent: 'center',
-    alignItems: 'center', // Ensure content is centered horizontally
-    width: '100%',
-    height: '100%',
   },
 });

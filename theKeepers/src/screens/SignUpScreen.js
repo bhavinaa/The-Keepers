@@ -39,7 +39,7 @@ export default function SignUpScreen({navigation}) {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
       <View style={styles.contentContainer}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title}>SIGN UP</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -102,10 +102,11 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Ensures text alignment in the text component itsel
   },
   input: {
-    width: "100%", // Adjusted width for wider input boxes
+    width: "90%", // Adjusted width for wider input boxes
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
+    borderRadius: 15,
     marginBottom: 16,
     paddingLeft: 8,
     paddingRight: 8,

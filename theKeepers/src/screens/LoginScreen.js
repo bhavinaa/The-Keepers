@@ -49,16 +49,11 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.contentContainer}>
-          <Text style={styles.welcomeText}> The Keepers </Text>
-          <Image
-            source={require('../assets/ourLogo.jpg')}
-            style={styles.logo}
-          />  
-
+        <Text style={styles.title}>LOGIN</Text>
           <TextInput
             ref={inputRef}
             style={styles.input}
-            placeholder="Enter your email"
+            placeholder="Email"
             placeholderTextColor="#ffffff"
             keyboardType="email-address"
             autoCapitalize="none"
@@ -69,10 +64,10 @@ export default function LoginScreen({ navigation }) {
           <TextInput
             ref={passwordRef}
             style={styles.input}
-            placeholder="Enter your password"
+            placeholder="Password"
             placeholderTextColor="#ffffff"
             value={password}
-            secureTextEntry
+            secureTextEntry // makes the password hidden
             onChangeText={(text) => setPassword(text)}
           />
           {error && <Text style={styles.errorText}>{error}</Text>}
@@ -112,16 +107,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     paddingHorizontal: 0,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: '#fffff0',
+    textAlign: 'center', // Ensures text alignment in the text component itsel
+  },
   input: {
     width: "80%", // Adjusted width for wider input boxes
     height: 40,
     borderColor: "gray",
+    marginTop: 15,
     borderWidth: 1,
-    marginBottom: 16,
+    marginBottom: 10,
     paddingLeft: 8,
     paddingRight: 8,
     color: "#ffffff", // Adjusted text color to white
-    borderRadius: 5,
+    borderRadius: 15,
   },
   button: {
     backgroundColor: "#302298",
@@ -135,10 +138,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   loginText: {
-    color: '#fffff0',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
+    marginBottom: 5,
+    color: '#fffff0',
+    textAlign: 'center', // Ensures text alignment in the text component itsel
   },
   welcomeText: {
     fontSize: 44,
@@ -149,11 +153,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
   },
-  logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-  },
   downText: {
     fontSize: 16,
     color: '#fffff0',
@@ -163,11 +162,11 @@ const styles = StyleSheet.create({
   signup: {
     alignSelf: "flex-start",
     textDecorationLine: "underline",
-    color: "#331ece",
+    color: "#4682b4",
     fontSize: 16,
     fontWeight: "500",
     marginLeft: 5,
-    marginTop: 10,
+    marginTop: 5,
   },
   image: {
     flex: 1,

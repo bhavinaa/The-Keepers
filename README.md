@@ -52,7 +52,7 @@ The motivation behind creating a gamified productivity app for university studen
 3. **Pomaddaro Timers**
    - Enable users to compartamalise and track their study sessions
 
-4.  **Reward System 
+4.  **Reward System**
    - Implement a reward system where users earn coins or gems upon completing tasks.
    
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { authentication } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
+import ourLogo from '../assets/ourLogo.jpg';
 import {the_background} from "../assets/the_background.png";
 
 import {

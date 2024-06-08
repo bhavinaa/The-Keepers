@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import GuestStack from "./src/navigation/GuestStack";
 import AppStack from "./src/navigation/AppStack";
 import {the_background} from './src/assets/the_background.png';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 
 //const image = {uri: the_background};
 
@@ -18,6 +20,19 @@ const AppContent = () => {
     </NavigationContainer>
   );
 };
+
+function MyKeepersTabBar({ navigation }) {
+  return (
+    <Button
+      title="Home"
+      onPress={() => {
+        // Navigate using the `navigation` prop that you received
+        navigation.navigate('HomeScreen');
+      }}
+    />
+  );
+}
+
 
 export default function App() {
   return (
@@ -36,6 +51,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-

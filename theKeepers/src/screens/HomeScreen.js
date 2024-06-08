@@ -18,6 +18,7 @@ export default function HomeScreen({navigation}) {
       });
   };
 
+  
   return (
     <SafeAreaView style={styles.container}>
       <Text>Home Page</Text>

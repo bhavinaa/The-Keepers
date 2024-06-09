@@ -17,6 +17,10 @@ const firebaseConfig = {
   appId: "1:1040602743546:web:36fc3c2a9c761ba09bff43"
 };
 
+passwordReset: email => {
+  return firebase.auth().sendPasswordResetEmail(email)
+},
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const app = initializeApp(firebaseConfig);

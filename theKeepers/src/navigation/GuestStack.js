@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "../screens/LoginScreen"; 
 import WelcomeScreen from "../screens/WelcomeScreen"; 
 import SignUpScreen from "../screens/SignUpScreen"; 
+import ForgetPassword from "../screens/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const GuestStack = () => {
       <Stack.Screen
         name="SignUp"
         component={SignUpScreen}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="ForgetPassword"
+        component={ForgetPassword}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>

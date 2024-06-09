@@ -1,45 +1,57 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  SafeAreaView, ImageBackground,
-} from "react-native";
-
 import { authentication } from "../firebase/config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword,  sendPasswordResetEmail } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
+import ourLogo from '../assets/ourLogo.jpg';
 import {the_background} from "../assets/the_background.png";
 
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  TouchableOpacity,
+  ActivityIndicator,
+  ImageBackground,
+  Alert,
+} from "react-native";
 
 
-export default function SignUpScreen({navigation}) {
-  const [email, setEmail] = useState("");
+
+
+
+export default function ForgetPassword({navigation}) {
+ 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
   const { setLoggedInUser } = useAuth();  
-  const handleSignUp = () => {
-    setIsLoading(true);
-    createUserWithEmailAndPassword(authentication, email, password)
-      .then((res) => {
-        setLoggedInUser(res.user);
-      })
-      .catch((error) => {
-        // Handle the error appropriately, perhaps by setting an error state
-      })
-      .finally(() => setIsLoading(false));
+  const { forgotPassword } = useAuth();
+  const [email, setEmail] = useState('');
+  const auth = useAuth();
+
+  // context is not running yet
+  const handleForgetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+    })
+    .catch((error) => {
+      Alert.alert('Error', error.message);
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+    
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
       <View style={styles.contentContainer}>
-      <Text style={styles.title}>SIGN UP</Text>
+      <Text style={styles.title}> Reset Password </Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -49,24 +61,9 @@ export default function SignUpScreen({navigation}) {
         value={email}
         onChangeText={(text) => setEmail(text)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#ffffff"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        placeholderTextColor="#ffffff"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={(text) => setConfirmPassword(text)}
-      />
-      <TouchableOpacity onPress={handleSignUp} style={styles.button}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      
+      <TouchableOpacity onPress={handleForgetPassword} style={styles.button}>
+        <Text style={styles.buttonText}> send email </Text>
         {isLoading && (
           <ActivityIndicator
             size="small"
@@ -102,11 +99,10 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Ensures text alignment in the text component itsel
   },
   input: {
-    width: "90%", // Adjusted width for wider input boxes
+    width: "100%", // Adjusted width for wider input boxes
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 15,
     marginBottom: 16,
     paddingLeft: 8,
     paddingRight: 8,
@@ -142,3 +138,17 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+

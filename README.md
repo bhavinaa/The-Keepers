@@ -1,15 +1,16 @@
-### The Keepers - Boost Your Productivity, Ignite Your Motivation, Sharpen Your Focus
+
+
+# The Keepers - Boost Your Productivity, Ignite Your Motivation, Sharpen Your Focus
 
 ---
 
-#### Team Name: The Keepers
-#### Members: Bhavina and Sahana
-
-#### Proposed Level of Achievement: Apollo 11
+## Team Name: The Keepers
+## Members: Bhavina and Sahana
+## Proposed Level of Achievement: Apollo 11
 
 ---
 
-### Motivation
+## Motivation
 
 Today's students face challenges in maintaining focus, managing tasks, and staying motivated in their studies. To tackle these issues, we propose developing a gamified productivity app.
 
@@ -21,13 +22,15 @@ The app aims to address common struggles among students, including:
 
 - **Motivation and Engagement:** Through goal-setting, progress tracking, and rewards systems, the app will keep students motivated and engaged in their academic pursuits.
 
-### Aim
+---
+
+## Aim
 
 The motivation behind creating a gamified productivity app for university students is to inject fun and excitement into task management. By turning everyday responsibilities into engaging challenges, we aim to boost user motivation and productivity. Our goal is to make studying feel less like a chore and more like a rewarding journey, inspiring students to tackle their assignments with enthusiasm and drive.
 
 ---
 
-### User Stories
+## User Stories
 
 1. **As a student overwhelmed by tasks**, I want to easily organize my assignments and deadlines within the app, so I can manage my workload efficiently and reduce stress.
 
@@ -37,9 +40,9 @@ The motivation behind creating a gamified productivity app for university studen
 
 ---
 
-### Features
+## Features
 
-#### Core Features:
+### Core Features:
 
 1. **Goal Setting and Tracking with STAR Technique:**
    - Allow users to set daily, weekly, and semester-wise goals using the SMART technique.
@@ -49,87 +52,144 @@ The motivation behind creating a gamified productivity app for university studen
    - Enable users to group tasks based on categories such as workout, study, etc.
    - Allow creation of personalized checklists for each task.
 
-3. **Pomaddaro Timers**
-   - Enable users to compartamalise and track their study sessions
+3. **Pomaddaro Timers:**
+   - Enable users to compartmentalize and track their study sessions.
 
-4.  **Reward System**
+4. **Reward System:**
    - Implement a reward system where users earn coins or gems upon completing tasks.
-   
 
-#### Extension Features:
+### Extension Features:
 
-7. **Habit Builder and Monthly Challenges:**
+5. **Habit Builder and Monthly Challenges:**
    - Provide monthly challenges for users to build habits and achieve specific goals.
    - Encourage users to set aside dedicated time for completing activities related to monthly challenges.
 
-8. **Spaced Repetition tool**
-   - Helps you keep track of the content you have to study, so you would be able to commit it to your long term memory
+6. **Spaced Repetition Tool:**
+   - Helps you keep track of the content you have to study, so you would be able to commit it to your long-term memory.
 
-9. **Study Group and Pomodoro Technique:**
+7. **Study Group and Pomodoro Technique:**
    - Allow users to form study groups for collaborative tasks and extra points.
    - Integrate the Pomodoro technique for study sessions, with customizable intervals for study and breaks.
 
-### Testing
+---
 
-What to expect!
+## Architecture and Design
 
-We have curently added the log in authentication feature that allows new users to register and an existing user to log in.
-We are planning to enhance the UI/UX and implement the other specific features for the project by the next milestone
+Our app follows a client-server architecture, with the frontend developed using React Native and the backend hosted on Firebase. The app's architecture includes the following components:
 
-pre-requisites 
-1. download and set up the Android virtual environment 
+- **Client-side:** Developed using React Native, the frontend comprises different screens for task management, goal setting, and tracking progress.
+- **Server-side:** Hosted on Firebase, the backend includes services for authentication, data storage, and real-time updates using Firestore.
 
-IDE / Code Editor
+
+## Full Tech Stack
+
+### Frontend Development:
+
+- **JavaScript Framework:** React Native
+- **Navigation:** React Navigation
+- **State Management:** React Context
+- **Styling:** CSS with StyleSheet
+
+### Backend Development:
+
+- **Serverless Backend:** Firebase
+- **Database:** Firestore
+- **Authentication:** Firebase Authentication
+
+## Pre-requisites
+
+1. Download and set up the Android virtual environment.
+
+## IDE / Code Editor Setup
 
 1. Clone the repository.
-2. Install Node.js, if you haven't.
-3. CD into the project folder.
-4. Run npm install to install all dependencies.
-5. Run npx expo start to start the project in development mode
+2. Install Node.js, if you haven't already.
+3. Change directory (`cd`) into the project folder.
+4. Run `npm install` to install all dependencies.
+5. Run `npx expo start` to start the project in development mode.
 
-Test Account
-- email: abc1@gmail.com
-- password: 123456
+## Test Account
 
-If you want to sign up you can create a new account overall
+- **Email:** abc1@gmail.com
+- **Password:** 123456
 
-TroubleShooting tips
-If you encounter any error while running the application clear the cache using the command:
-1. npx expo start -c (in the terminal)
-2. wipe data from the android virtual debugger 
+You can also sign up for a new account if needed.
 
+## Troubleshooting Tips
 
-### Posters and Video for submission
-~ to update skylab
+If you encounter any errors while running the application, follow these troubleshooting steps:
 
-Full Tech Stack
-Frontend Development:
+1. Run `npx expo start -c` in the terminal to clear the cache.
+2. Wipe data from the Android virtual debugger.
 
-JavaScript Framework: React Native
-Navigation: React Navigation
-State Management: React Context 
-Styling: CSS with StyleSheet
+## Posters and Video for Submission
 
-###Backend Development:
+Please update skylab with posters and video for submission.
 
-Serverless Backend: Firebase
-Database: Firestore
-Authentication: Firebase Authentication
+### Additional Tools and Libraries:
 
-Additional Tools and Libraries: 
+- **Testing Framework:** Jest and React Testing Library (In progress)
+- **IDE:** Visual Studio Code
+- **Design:** Figma for designing the UI
 
-In progress work ~ 
-###Testing Framework: Jest and React Testing Library
+## Revision History
 
-IDE: Visual Studio Code
-Figma: Designing of the UI 
+- **Release 1.0:**
+  - **Features:**
+    1. Login
+    2. Sign up
 
+## Coding Standards and Guidelines
 
-Revision History 
+To maintain code quality and consistency across the project, we adhere to the following coding standards and guidelines:
 
-- Relase 1.0
-  Features
-  1. login
-  2. sign up 
+- **Code Formatting:** (tbc)
+- **Documentation:** Code comments are used extensively to explain the purpose and functionality of each module, function, and variable.
+- **Code Review Process:** (tbc)
+---
 
+## Version Control
 
+We use Git for version control, with the project hosted on GitHub. Our version control practices include:
+
+- **Branching Strategy:** We follow the GitFlow branching model, with separate branches for feature development, bug fixes, and release management.
+- **Commit Guidelines:** Commits follow the Conventional Commits specification for clear and standardized commit messages.
+- **Contributions Workflow:** Contributors submit pull requests for review, and changes are merged into the main branch after approval by team members.
+
+---
+
+## Issue Tracking and Project Management
+
+For issue tracking and project management, we use Jira. Our project management practices include:
+
+- **Issue Tracking:** Tasks, bugs, and feature requests are logged and tracked using Jira issues, with assigned priorities and deadlines. (tbc) 
+
+---
+
+## Testing 
+
+Our testing strategy encompasses various levels of testing, including unit tests. 
+
+Quality assurance practices include:
+
+- **Test Automation:** We use Jest and React Testing Library for writing and running automated tests.
+
+---
+
+## Security and Compliance
+
+Security is a top priority in our app development process. We implement the following security measures:
+
+- **Authentication and Authorization:** User authentication is handled securely using Firebase Authentication, with authorization rules enforced at the backend.
+
+---
+
+## Documentation Tools
+
+---
+
+## API Documentation
+
+If applicable, documentation for APIs exposed by the application is available, including:
+
+- **API Endpoints:** Descriptions of API endpoints, request/response formats, and authentication mechanisms. (tbc) 

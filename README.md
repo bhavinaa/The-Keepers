@@ -96,7 +96,7 @@ Our app follows a client-server architecture, with the frontend developed using 
 - **Database:** Firestore
 - **Authentication:** Firebase Authentication
 
-  #### Additional Tools and Libraries:
+### Additional Tools and Libraries:
 
 - **Project Management:** Jira
 - **Design:** Figma for designing the UI

@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { authentication } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import {StyleSheet} from 'react-native';
+import TaskScreen from './TaskScreen';
 
 
 export default function HomeScreen({navigation}) {
@@ -24,6 +25,9 @@ export default function HomeScreen({navigation}) {
       <Text>Home Page</Text>
       <TouchableOpacity onPress={signOutUser} style={styles.button}>
         <Text style={styles.signOutText}>Sign Out</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.button}>
+        <Text style={styles.signOutText}>Task</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

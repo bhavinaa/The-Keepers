@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { authentication } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import {StyleSheet} from 'react-native';
-import TaskScreen from './TaskScreen';
 
 
 export default function HomeScreen({navigation}) {

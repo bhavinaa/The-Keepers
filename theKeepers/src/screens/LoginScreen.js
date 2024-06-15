@@ -48,7 +48,8 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
-        <View style={styles.contentContainer}>
+
+        <SafeAreaView style={styles.contentContainer}>
         <Text style={styles.title}>LOGIN</Text>
           <TextInput
             ref={inputRef}
@@ -98,7 +99,7 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.signup}> Forgot Password? </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
     </View>
   );

@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen"; 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TaskScreen from "../screens/TaskScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import PomodaroScreen from "../screens/PomodaroScreen";
 
 //const Stack = createNativeStackNavigator();
 
@@ -15,8 +17,9 @@ function TimeKeeperBottomMenuTabs() {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Task" component={TaskScreen} />
-      <Tab.Screen name="Pomodaro" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={HomeScreen} />
+      <Tab.Screen name="Pomodaro" component={PomodaroScreen} />
+      <Tab.Screen name="Calendar" component={TaskScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

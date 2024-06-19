@@ -54,8 +54,6 @@ The app aims to address common struggles among students, including:
 
 3. **As a student looking for motivation in my academic journey**, I want the app to track my progress, set achievable goals, and reward my accomplishments, so I feel a sense of achievement and stay committed to my studies.
 
-To format your detailed documentation for GitHub, you can use Markdown, which GitHub natively supports. Here's your documentation structured and formatted appropriately using Markdown:
-
 ---
 
 ### Audience
@@ -230,8 +228,6 @@ Our app follows a client-server architecture, with the frontend developed using 
 - **Client-side:** Developed using React Native, the frontend comprises different screens for task management, goal setting, and tracking progress.
 - **Server-side:** Hosted on Firebase, the backend includes services for authentication, data storage, and real-time updates using Firestore.
 
-Certainly! Let's continue formatting the remaining sections of your detailed documentation using Markdown:
-
 ---
 
 ## 4. Setup and Installation
@@ -328,15 +324,9 @@ Documentation on the problems of the code, ongoing problems.
 * forget password is not authenticated
 * database collection is not linked to multiple accounts 
 
-### Troubleshooting Guide
-Common issues and their resolutions.
-
 ---
 
 ## 11. Appendix
-
-### Glossary
-Definitions of terms and acronyms used in the documentation.
 
 ### References
 Links to external resources, libraries, and tools used.
@@ -350,6 +340,13 @@ Links to external resources, libraries, and tools used.
   - UI for better usability.
 - **Fixed**:
   - Fixed timer bug which did not create a new component each time, and had resulted in the time not pausing each time
+ 
+### AI assitance in
+
+- Documentation Assistance
+Purpose: it helped me format the content in google docs to the markdown format
+Implementation: i prompted it to make it into a format to place it in the github read me 
+Feedback: it told me to break down the documentation into various sub categories 
 
 ---
 

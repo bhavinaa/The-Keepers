@@ -9,15 +9,18 @@ import {
   SafeAreaView, ImageBackground,
 } from "react-native";
 
-import { authentication } from "../firebase/config";
+import { authentication, db } from "../firebase/config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
 import {the_background} from "../assets/the_background.png";
+import { addDoc, collection, setDoc , doc} from "firebase/firestore";
+
 
 
 
 export default function SignUpScreen({navigation}) {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -26,8 +29,21 @@ export default function SignUpScreen({navigation}) {
   const handleSignUp = () => {
     setIsLoading(true);
     createUserWithEmailAndPassword(authentication, email, password)
-      .then((res) => {
+    .then(async (res) => {
+      let docRefId = null;
+      try {
+        const docRef = await addDoc(collection(db, "Users"), {
+          identity: email,
+          username: name,
+        });
+        console.log("Document written with ID: ", docRef.id);
+        docRefId = docRef.id;
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert('Failed to save user data');
+      }
         setLoggedInUser(res.user);
+        console.log("Navigation triggered to Home");
       })
       .catch((error) => {
         // Handle the error appropriately, perhaps by setting an error state
@@ -40,6 +56,14 @@ export default function SignUpScreen({navigation}) {
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
       <View style={styles.contentContainer}>
       <Text style={styles.title}>SIGN UP</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        placeholderTextColor="#ffffff"
+        autoCapitalize="none"
+        value={name}
+        onChangeText={(text) => setName(text)}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"

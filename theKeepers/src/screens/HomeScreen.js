@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground } from 'react-native';
 import { useAuth } from "../contexts/AuthContext";
-import { authentication } from "../firebase/config";
+import { authentication, db } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import {StyleSheet} from 'react-native';
-
+import { getDoc, query, where } from 'firebase/firestore';
 
 export default function HomeScreen({navigation}) {
   const { loggedInUser, setLoggedInUser } = useAuth();
@@ -17,11 +17,31 @@ export default function HomeScreen({navigation}) {
         // Handle error appropriately, perhaps by setting an error state
       });
   };
-
+  /*
+  const username = null;
+  const q = getDoc(query(db, 'Users'), where('email', "==",loggedInUser?.email))
+  const reqdoc = getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // Access the 'name' field of the document
+    username = doc.data().username;
+    console.log('Name:', username);
+  }); //not sure why the error appears
+  const signOutUser = () => {
+    signOut(authentication)
+      .then(() => {
+        setLoggedInUser(null);
+      })
+      .catch((err) => {
+        // Handle error appropriately, perhaps by setting an error state
+        console.error('Error signing out: ', err);
+        alert('Error signing out');
+      });
+  };
+  */
   
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Home Page</Text>
+      <Text>Welcome</Text>
       <TouchableOpacity onPress={signOutUser} style={styles.button}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>

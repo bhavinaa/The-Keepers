@@ -1,33 +1,43 @@
 import React from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, TextInput, Alert } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, TextInput, Alert, StyleSheet } from 'react-native';
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from '../firebase/config'; 
+import { useTasks } from '../contexts/TasksContext'; 
+import { useAuth } from '../contexts/AuthContext';
 
-export default function TaskScreen({navigation}) {
+export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
+  const { addTask: addTaskToContext } = useTasks(); // Using context to add task
+  const { loggedInUser } = useAuth();
 
-  const addTask = () => {
+  const addTask = async () => {
     if (!validateDate(date)) {
       alert('Please enter the date in yyyy-mm-dd format');
       return;
     }
 
-    addDoc(collection(db, "todo"), {
-      title: task,
-      deadline: Timestamp.fromDate(new Date(date))
-    })
-    .then((docRef) => {
+    try {
+      const docRef = await addDoc(collection(db, "Users/QkM4smBF09TtEmruiU4K", "todo"), { //update to general id
+        email: loggedInUser?.email,
+        title: task,
+        deadline: Timestamp.fromDate(new Date(date))
+      });
       console.log("Document written with ID: ", docRef.id);
-      alert('Task added successfully');
+      
+      // Add task to context
+      addTaskToContext({
+        id: docRef.id,
+        title: task,
+        deadline: Timestamp.fromDate(new Date(date)).toDate()
+      });
+      navigation.navigate('Calendar');
       setTask("");
-      setDate(""); 
-    })
-    .catch((error) => {
+      setDate("");
+    } catch (error) {
       console.error("Error adding document: ", error);
       alert('Failed to add task');
-    });
+    }
   };
 
   const validateDate = (date) => {
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   input: {
-    width: "80%", // Adjusted width for wider input boxes
+    width: "80%",
     height: 40,
     borderColor: "gray",
     marginTop: 15,
@@ -89,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 8,
     paddingRight: 8,
-    color: "#ffffff", // Adjusted text color to white
+    color: "#ffffff",
     borderRadius: 15,
   },
   button: {
@@ -97,7 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 14,
-    width: "80%", // Adjusted width for the button to match input boxes
+    width: "80%",
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -108,6 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     color: '#fffff0',
-    textAlign: 'center', // Ensures text alignment in the text component itsel
+    textAlign: 'center',
   }
 });
+

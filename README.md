@@ -344,10 +344,9 @@ Links to external resources, libraries, and tools used.
 ### AI assitance in
 
 - Documentation Assistance
-Purpose: it helped me format the content in google docs to the markdown format
-Implementation: i prompted it to make it into a format to place it in the github read me 
-Feedback: it told me to break down the documentation into various sub categories 
-
+  - Purpose: it helped me format the content in google docs to the markdown format
+  - Implementation: i prompted it to make it into a format to place it in the github read me
+  - Feedback: it told me to break down the documentation into various sub categories 
 ---
 
 ## Posters and Video for Submission

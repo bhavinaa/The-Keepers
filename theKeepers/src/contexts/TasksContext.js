@@ -1,29 +1,44 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from '../firebase/config';
+import { useAuth } from './AuthContext';
 
-// Create the context
 const TasksContext = createContext();
 
-// Custom hook to use the TasksContext
-export const useTasks = () => {
-  return useContext(TasksContext);
-};
+export const useTasks = () => useContext(TasksContext);
 
-// Provider component to wrap around components that need access to tasks
 export const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { loggedInUser } = useAuth();
 
-  // Function to add a new task to the state
-  const addTask = (task) => {
-    const date = task.deadline.toISOString().split('T')[0]; // Get the date in yyyy-mm-dd format
-    setTasks((prevTasks) => ({
-      ...prevTasks,
-      [date]: [...(prevTasks[date] || []), task], // Add the new task to the array for that date
-    }));
-  };
+  useEffect(() => {
+    if (loggedInUser?.email) {
+      const q = query(collection(db, "todo"), where("email", "==", loggedInUser.email));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const tasksData = {};
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const dateKey = data.deadline.toDate().toISOString().split('T')[0];
+          if (!tasksData[dateKey]) {
+            tasksData[dateKey] = [];
+          }
+          tasksData[dateKey].push({
+            id: doc.id, // Unique identifier for each task document
+            title: data.title,
+            deadline: data.deadline.toDate()
+          });
+        });
+        setTasks(tasksData);
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    }
+  }, [loggedInUser]);
 
   return (
-    // Provide the tasks state and addTask function to child components
-    <TasksContext.Provider value={{ tasks, addTask }}>
+    <TasksContext.Provider value={{ tasks, loading }}>
       {children}
     </TasksContext.Provider>
   );

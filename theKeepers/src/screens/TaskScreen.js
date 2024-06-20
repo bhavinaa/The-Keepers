@@ -8,34 +8,34 @@ import { useAuth } from '../contexts/AuthContext';
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
-  const { addTask: addTaskToContext } = useTasks(); // Using context to add task
   const { loggedInUser } = useAuth();
 
-  const addTask = async () => {
+  const handleAddTask = async () => {
     if (!validateDate(date)) {
-      alert('Please enter the date in yyyy-mm-dd format');
+      alert('Please enter the date in yyyy-mm-dd format'); // check format
       return;
     }
+    
+  /*
+  const parsedDate = new Date(date);
+  if (isNaN(parsedDate.getTime())) {
+    alert('Invalid date. Please enter a valid date.'); dont use it, can take input s.a 1672
+    return;
+  }
+    */
 
     try {
-      const docRef = await addDoc(collection(db, "Users/QkM4smBF09TtEmruiU4K", "todo"), { //update to general id
+      const docRef = await addDoc(collection(db, "todo"), { //update to general id
         email: loggedInUser?.email,
         title: task,
         deadline: Timestamp.fromDate(new Date(date))
       });
       console.log("Document written with ID: ", docRef.id);
-      
-      // Add task to context
-      addTaskToContext({
-        id: docRef.id,
-        title: task,
-        deadline: Timestamp.fromDate(new Date(date)).toDate()
-      });
       navigation.navigate('Calendar');
       setTask("");
       setDate("");
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error adding document in taskscreen: ", error);
       alert('Failed to add task');
     }
   };
@@ -63,7 +63,7 @@ export default function TaskScreen({ navigation }) {
           value={date}
           onChangeText={(date) => setDate(date)}
         />
-        <TouchableOpacity onPress={addTask} style={styles.button}>
+        <TouchableOpacity onPress={handleAddTask} style={styles.button}>
           <Text style={styles.buttonText}>Add Task</Text>
         </TouchableOpacity>
       </ImageBackground>

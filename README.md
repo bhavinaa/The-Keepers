@@ -322,7 +322,11 @@ Description of different environments (development, staging, production).
 Documentation on the problems of the code, ongoing problems.
 [19/6/24]
 * forget password is not authenticated
-* database collection is not linked to multiple accounts 
+* database collection is not linked to multiple accounts
+
+[21/6/24]
+* unable to delete individual tasks in the toDoList Feature 
+  
 
 ---
 

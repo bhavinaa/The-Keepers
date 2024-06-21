@@ -6,6 +6,7 @@ import TaskScreen from "../screens/TaskScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PomodaroScreen from "../screens/PomodaroScreen";
 import CalendarScreen from "../screens/CalendarScreen";
+import ToDoListScreen from "../screens/ToDoListScreen";
 
 //const Stack = createNativeStackNavigator();
 
@@ -17,8 +18,9 @@ function TimeKeeperBottomMenuTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Task" component={TaskScreen} />
+      <Tab.Screen name="ToDoList" component={ToDoListScreen} />
       <Tab.Screen name="Pomodaro" component={PomodaroScreen} />
+      <Tab.Screen name="Task" component={TaskScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

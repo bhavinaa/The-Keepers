@@ -5,7 +5,7 @@ import { db } from '../firebase/config';
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
 
-export default function ProfileScreen({ navigation }) {
+export default function ToDoListScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
   const { loggedInUser } = useAuth();

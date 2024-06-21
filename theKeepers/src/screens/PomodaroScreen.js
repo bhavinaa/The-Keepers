@@ -1,131 +1,188 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
 import {
   StyleSheet,
-  Button,
+  TouchableOpacity,
+  View,
   SafeAreaView,
+  Text,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
+// import Sound from 'react-native-sound';
+
 const Separator = () => <View style={styles.separator} />;
 
+const CustomButton = ({ onPress, title, color }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.button, { backgroundColor: color }]}
+  >
+    <Text style={styles.buttonText}>{title}</Text>
+  </TouchableOpacity>
+);
+
 const renderTime = ({ remainingTime }) => {
-    const minutes = Math.floor(remainingTime / 60);
-    const seconds = remainingTime % 60;
-  
-    if (remainingTime === 0) {
-      return <Text style={styles.timerText}>Too late...</Text>;
-    }
-  
-    return (
-      <View style={styles.timer}>
-        <Text style={styles.value}>{`${minutes}:${
-          seconds < 10 ? '0' : ''
-        }${seconds}  `}</Text>
-      </View>
-    );
+  const minutes = Math.floor(remainingTime / 60);
+  const seconds = remainingTime % 60;
+
+  if (remainingTime === 0) {
+    return <Text style={styles.timerText}>Timer Completed</Text>;
+  }
+
+  return (
+    <View style={styles.timer}>
+      <Text style={styles.value}>
+        {`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}
+      </Text>
+    </View>
+  );
+};
+
+export default function App() {
+  const [isPlaying, setIsPlaying] = React.useState(true);
+  const [duration, setDuration] = React.useState(60);
+  const [key, setKey] = React.useState(0);
+  const [noOfPMTimes, setNoOfPMTimes] = React.useState(0);
+
+  const startPMTimer = () => {
+    Alert.alert('Starting Pomodoro timer');
+    setKey(prevKey => prevKey + 1);
+    setDuration(1500);
+    setIsPlaying(true);
   };
 
-export default function PomodaroScreen({ navigation })  {
+  const startSBTimer = () => {
+    Alert.alert('Starting Short Break timer');
+    setKey(prevKey => prevKey + 1);
+    setDuration(300);
+    setIsPlaying(true);
+  };
 
-    const [isPlaying, setIsPlaying] = React.useState(true);
-    const [duration, setDuration] = React.useState(60);
-  
-  
-    const startPMTimer = () => {
-      Alert.alert('starting pm timer');
-      setDuration(1500);
-      setIsPlaying(true);
-    };
-  
-   const startSBTimer = () => {
-      Alert.alert('Starting Short Break timer');
-      setIsPlaying(false)
-      setDuration(300);
-      setIsPlaying(true);
-    };
-  
-     const startLBTimer = () => {
-      Alert.alert('Starting Short Break timer');
-      setIsPlaying(false)
-      setDuration(900);
-      setIsPlaying(true);
-    };
-  
-  
-    const stopPMTimer = () => {
-      Alert.alert('Stopped Timer');
-      setDuration(1500);
-      setIsPlaying(false);
-    };
-  
-    return (
-      <SafeAreaView style={styles.container}>
-        <View>
-          <Button title="Pomodoro (25 min)" onPress={startPMTimer} />
-        </View>
-        <Separator />
-        <View>
-          <Button
-            title="Short Break( 5 min)"
-            color="#f194ff"
-            onPress={startSBTimer}
-          />
-        </View>
-        <Separator />
-        <View>
-          <Button
-            title="Long Break (15 min)"
-            onPress={startLBTimer}
-          />
-        </View>
-        <Separator />
-        <View style={styles.timer}>
-          <CountdownCircleTimer
-            isPlaying={isPlaying}
-            duration={duration}
-            strokeWidth={12}
-            colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-            updateInterval={1}>
-            {renderTime}
-          </CountdownCircleTimer>
-        </View>
-        <Separator />
-       
-        <View>
-          <Button title="Stop" onPress={stopPMTimer} />
-        </View>
-        <Separator />
-      </SafeAreaView>
-    );
+  const startLBTimer = () => {
+    Alert.alert('Starting Long Break timer');
+    setKey(prevKey => prevKey + 1);
+    setDuration(900);
+    setIsPlaying(true);
+  };
+
+  const stopPMTimer = () => {
+    Alert.alert('Stopping Timer');
+    setIsPlaying(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../assets/the_background.png')}
+        resizeMode="cover"
+        style={styles.image}
+      >
+        <SafeAreaView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}> Pomodoro </Text>
+          </View>
+          <View style={styles.timerContainer}>
+            <CountdownCircleTimer
+              key={key}
+              isPlaying={isPlaying}
+              duration={duration}
+              strokeWidth={12}
+              colors={["#778DA9", '#E0E1DD', '#24243E']}
+              //colors={['#0F0C29', '#302B63', '#24243E']}
+              updateInterval={1}
+              onComplete={() => {
+                Alert.alert('Timer Finished');
+                // TO DO: Increase the respective timer status in the Firebase database
+              }}
+            >
+              {renderTime}
+            </CountdownCircleTimer>
+          </View>
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="Pomodoro (25 min)"
+              color="#FF9F1C"
+              onPress={startPMTimer}
+            />
+            <Separator />
+            <CustomButton
+              title="Short Break (5 min)"
+              color="#3B9AE1"
+              //color="#AFEEEE"
+              onPress={startSBTimer}
+            />
+            <Separator />
+            <CustomButton
+              title="Long Break (15 min)"
+              color = "#A8DADC"
+              onPress={startLBTimer}
+            />
+            <Separator />
+            <CustomButton
+              title="Stop"
+              color = "#FFD166"
+              //color="#FFE4E1"
+              onPress={stopPMTimer}
+            />
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      marginHorizontal: 16,
-    },
-    timer: {
-      flexDirection: 'row',
-      padding: 60,
-    },
-    title: {
-      textAlign: 'center',
-      marginVertical: 8,
-    },
-    fixToText: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-    },
-    separator: {
-      marginVertical: 8,
-      borderBottomColor: '#737373',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-    },
-    value: {
-      fontSize: 20,
-      fontWeight: 'bold', // Making the time bold
-    },
-  });
-  
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  timerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+    elevation: 3,
+    width: '70%',
+    marginVertical: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  timer: {
+    alignItems: 'center',
+  },
+  value: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  separator: {
+    height: 10,
+  },
+});

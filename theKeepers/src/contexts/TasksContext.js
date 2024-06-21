@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
@@ -26,7 +26,8 @@ export const TasksProvider = ({ children }) => {
           tasksData[dateKey].push({
             id: doc.id, // Unique identifier for each task document
             title: data.title,
-            deadline: data.deadline.toDate()
+            deadline: data.deadline.toDate(),
+            completed: data.completed || false
           });
         });
         setTasks(tasksData);
@@ -37,8 +38,18 @@ export const TasksProvider = ({ children }) => {
     }
   }, [loggedInUser]);
 
+  const toggleTaskCompletion = async (taskId, completed) => {
+    const taskDoc = doc(db, "todo", taskId);
+    await updateDoc(taskDoc, { completed: !completed });
+  };
+
+  const deleteTask = async (taskId) => {
+    const taskDoc = doc(db, "todo", taskId);
+    await deleteDoc(taskDoc);
+  };
+
   return (
-    <TasksContext.Provider value={{ tasks, loading }}>
+    <TasksContext.Provider value={{ tasks, loading, toggleTaskCompletion, deleteTask }}>
       {children}
     </TasksContext.Provider>
   );

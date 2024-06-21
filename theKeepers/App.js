@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './src/contexts/AuthContext';
 import GuestStack from "./src/navigation/GuestStack";
 import AppStack from "./src/navigation/AppStack";
 import { TasksProvider } from './src/contexts/TasksContext';
+import { ToDoListProvider } from './src/contexts/ToDoListContext';
 
 const AppContent = () => {
   const { loggedInUser } = useAuth();
@@ -19,9 +20,11 @@ export default function App() {
   return (
     <ImageBackground source={require('./src/assets/the_background.png')} resizeMode="cover" style={styles.image}>
       <AuthProvider>
+      <ToDoListProvider>
         <TasksProvider>
           <AppContent />
         </TasksProvider>
+        </ToDoListProvider>
       </AuthProvider>
     </ImageBackground>
   );

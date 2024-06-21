@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, StyleSheet } from 'react-native';
 import { useAuth } from "../contexts/AuthContext";
-import { authentication, db } from "../firebase/config";
+import { authentication } from "../firebase/config";
 import { signOut } from "firebase/auth";
-import {StyleSheet} from 'react-native';
-import { getDoc, query, where } from 'firebase/firestore';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({ navigation }) {
   const { loggedInUser, setLoggedInUser } = useAuth();
+
   const signOutUser = () => {
     signOut(authentication)
       .then(() => {
@@ -17,37 +16,38 @@ export default function HomeScreen({navigation}) {
         // Handle error appropriately, perhaps by setting an error state
       });
   };
-  /*
-  const username = null;
-  const q = getDoc(query(db, 'Users'), where('email', "==",loggedInUser?.email))
-  const reqdoc = getDocs(q);
-  querySnapshot.forEach((doc) => {
-    // Access the 'name' field of the document
-    username = doc.data().username;
-    console.log('Name:', username);
-  }); //not sure why the error appears
-  const signOutUser = () => {
-    signOut(authentication)
-      .then(() => {
-        setLoggedInUser(null);
-      })
-      .catch((err) => {
-        // Handle error appropriately, perhaps by setting an error state
-        console.error('Error signing out: ', err);
-        alert('Error signing out');
-      });
-  };
-  */
-  
+
+  // Placeholder data (replace with actual data later)
+  const totalPomodoroTime = "2 hours 30 minutes";
+  const totalUserPoints = 150;
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Welcome</Text>
-      <TouchableOpacity onPress={signOutUser} style={styles.button}>
-        <Text style={styles.signOutText}>Sign Out</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.button}>
-        <Text style={styles.signOutText}>Task</Text>
-      </TouchableOpacity>
+      <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
+        <View style={styles.overlay}>
+          {/* Sign out button */}
+          <TouchableOpacity onPress={signOutUser} style={styles.signOutButton}>
+            <Text style={styles.signOutButtonText}>Sign Out</Text>
+          </TouchableOpacity>
+
+          {/* User statistics section */}
+          <View style={styles.userStatsContainer}>
+            <Text style={styles.welcomeText}>Welcome {loggedInUser ? loggedInUser.name : ''}</Text>
+            {/* Placeholder for user analytics */}
+            <View style={styles.analyticsContainer}>
+              <Text style={styles.analyticsText}>Total Pomodoro Study Time:</Text>
+              <Text style={styles.analyticsValue}>{totalPomodoroTime}</Text>
+              <Text style={styles.analyticsText}>Total User Points:</Text>
+              <Text style={styles.analyticsValue}>{totalUserPoints}</Text>
+            </View>
+          </View>
+
+          {/* Button to navigate to task screen */}
+          <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.taskButton}>
+            <Text style={styles.buttonText}>Task</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -55,23 +55,72 @@ export default function HomeScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: 'blue',
-    borderRadius: 5,
-  },
-  signOutText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
   image: {
     flex: 1,
     justifyContent: 'center',
-    width: '100%',
-    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)', // Adds a semi-transparent overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  welcomeText: {
+    fontSize: 24,
+    color: 'white',
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  userStatsContainer: {
+    flex: 1, // Takes up the entire available space in the overlay
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
+    marginTop: 50, // Moves the user stats section towards the top half of the screen
+    width: '80%', // Adjusts the width of the user stats container
+  },
+  analyticsContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  analyticsText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  analyticsValue: {
+    color: 'white',
+    fontSize: 14,
+  },
+  taskButton: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#1E90FF',
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  signOutButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    padding: 10,
+    backgroundColor: '#FF6347',
+    borderRadius: 5,
+  },
+  signOutButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

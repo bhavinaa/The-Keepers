@@ -1,71 +1,52 @@
-import React from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, TextInput, Alert, StyleSheet } from 'react-native';
-import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { db } from '../firebase/config'; 
-import { useTasks } from '../contexts/TasksContext'; 
+import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, ImageBackground, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase/config';
+import { collection, doc, getDoc } from 'firebase/firestore';
 
 export default function ProfileScreen({ navigation }) {
-  const [task, setTask] = React.useState("");
-  const [date, setDate] = React.useState("");
   const { loggedInUser } = useAuth();
+  const [username, setUsername] = useState('');
+  
 
-  const handleAddTask = async () => {
-    if (!validateDate(date)) {
-      alert('Please enter the date in yyyy-mm-dd format'); // check format
-      return;
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await db.collection('users').doc(loggedInUser.uid).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          setUsername(userData.username || ''); // Ensure username is initialized
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    if (loggedInUser) {
+      fetchUserData();
     }
-    
-  /*
-  const parsedDate = new Date(date);
-  if (isNaN(parsedDate.getTime())) {
-    alert('Invalid date. Please enter a valid date.'); dont use it, can take input s.a 1672
-    return;
-  }
-    */
-
-    try {
-      const docRef = await addDoc(collection(db, "todo"), { //update to general id
-        email: loggedInUser?.email,
-        title: task,
-        deadline: Timestamp.fromDate(new Date(date))
-      });
-      console.log("Document written with ID: ", docRef.id);
-      navigation.navigate('Calendar');
-      setTask("");
-      setDate("");
-    } catch (error) {
-      console.error("Error adding document in taskscreen: ", error);
-      alert('Failed to add task');
-    }
-  };
-
-  const validateDate = (date) => {
-    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-    return regex.test(date);
-  };
+  }, [loggedInUser]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
-        <TextInput
-          style={styles.input}
-          placeholder="Task"
-          placeholderTextColor="#ffffff"
-          value={task}
-          onChangeText={(task) => setTask(task)}
-        />
+        <View style={styles.overlay}>
+          <Text style={styles.header}>Profile</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="yyyy-mm-dd"
-          placeholderTextColor="#ffffff"
-          value={date}
-          onChangeText={(date) => setDate(date)}
-        />
-        <TouchableOpacity onPress={handleAddTask} style={styles.button}>
-          <Text style={styles.buttonText}>Add Task</Text>
-        </TouchableOpacity>
+          {/* User info section */}
+          <View style={styles.userInfo}>
+            <View style={styles.infoItem}>
+              <Text style={styles.label}>Username:</Text>
+              <Text style={styles.info}>{username}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.label}>Email:</Text>
+              <Text style={styles.info}>{loggedInUser ? loggedInUser.email : ''}</Text>
+            </View>
+          </View>
+        </View>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -77,48 +58,41 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
   image: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    margin: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
-  input: {
-    width: "80%",
-    height: 40,
-    borderColor: "gray",
-    marginTop: 15,
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-    paddingRight: 8,
-    color: "#ffffff",
-    borderRadius: 15,
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    width: '100%',
   },
-  button: {
-    backgroundColor: "#302298",
-    borderRadius: 20,
-    padding: 10,
-    margin: 14,
-    width: "80%",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+  header: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
   },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: "bold",
+  userInfo: {
+    width: '80%',
+    marginTop: 50, // Adjust the marginTop to move the user info up
+  },
+  infoItem: {
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 18,
+    color: 'white',
     marginBottom: 5,
-    color: '#fffff0',
-    textAlign: 'center',
-  }
+  },
+  info: {
+    fontSize: 16,
+    color: 'white',
+  },
 });
-

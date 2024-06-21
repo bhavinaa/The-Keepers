@@ -1,61 +1,24 @@
-import React, { useState, useEffect } from 'react';
+// ToDoListScreen.js
+
+import React, { useState } from 'react';
 import { View, Text, SafeAreaView, Pressable, FlatList, TextInput, ActivityIndicator, StyleSheet, ImageBackground } from 'react-native';
-import { addDoc, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { db } from '../firebase/config'; 
 import { MaterialIcons } from '@expo/vector-icons';
-import ToDoList from '../components/ToDoList'; // Ensure this is the correct path
-import { useAuth } from '../contexts/AuthContext';
+import { useToDoList } from '../contexts/ToDoListContext'; // Update path as per your project
 
 export default function ToDoListScreen() {
   const [title, setTitle] = useState("");
-  const [toDoList, setToDoList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { loggedInUser } = useAuth();
+  const { toDoList, loading, addToDoList, deleteToDoListItem } = useToDoList();
 
-  const addToDoList = async () => {
-    try {
-      await addDoc(collection(db, "toDoList"), {
-        title: title,
-        isChecked: false,
-      });
+  const handleAddToDo = () => {
+    if (title.trim()) {
+      addToDoList(title.trim());
       setTitle("");
-      getToDoList(); // Refresh the list after adding a new item
-    } catch (e) {
-      console.error("Error adding document: ", e);
     }
   };
 
-  const getToDoList = async () => {
-    setLoading(true);
-    try {
-      const querySnapshot = await getDocs(collection(db, "toDoList"));
-      const list = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setToDoList(list);
-    } catch (e) {
-      console.error("Error fetching documents: ", e);
-    } finally {
-      setLoading(false);
-    }
+  const handleDeleteToDo = (id) => {
+    deleteToDoListItem(id);
   };
-
-  
-  const deleteToDoList = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "toDoList"));
-      const deletePromises = querySnapshot.docs.map((item) => deleteDoc(doc(db, "toDoList", item.id)));
-      await Promise.all(deletePromises);
-      getToDoList(); // Refresh the list after deletion
-    } catch (e) {
-      console.error("Error removing documents: ", e);
-    }
-  };
-
-  useEffect(() => {
-    getToDoList();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,7 +35,7 @@ export default function ToDoListScreen() {
           <Text style={styles.noOfItems}>{toDoList.length}</Text>
 
           {/* Delete all */}
-          <Pressable onPress={deleteToDoList}>
+          <Pressable onPress={() => handleDeleteAll()}>
             <MaterialIcons name="delete" size={30} color="white" />
           </Pressable>
         </View>
@@ -84,12 +47,12 @@ export default function ToDoListScreen() {
           <FlatList
             data={toDoList}
             renderItem={({ item }) => (
-              <ToDoList
-                title={item.title}
-                isChecked={item.isChecked}
-                id={item.id}
-                getToDoList={getToDoList} // Pass a function to refresh the list after deletion
-              />
+              <View style={styles.toDoListItem}>
+                <Text>{item.title}</Text>
+                <Pressable onPress={() => handleDeleteToDo(item.id)}>
+                  <MaterialIcons name="delete" size={24} color="black" />
+                </Pressable>
+              </View>
             )}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.listContent}
@@ -102,7 +65,7 @@ export default function ToDoListScreen() {
           style={styles.input}
           value={title}
           onChangeText={(text) => setTitle(text)}
-          onSubmitEditing={addToDoList}
+          onSubmitEditing={handleAddToDo}
         />
       </ImageBackground>
     </SafeAreaView>
@@ -156,5 +119,18 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingBottom: 100,
     alignItems: 'center', // Center the content
-  }
+  },
+  toDoListItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '90%',
+    backgroundColor: '#fff',
+  },
 });

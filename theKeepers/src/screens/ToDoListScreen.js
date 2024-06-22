@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { View, Text, SafeAreaView, Pressable, FlatList, TextInput, ActivityIndicator, StyleSheet, ImageBackground } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useToDoList } from '../contexts/ToDoListContext'; // Update path as per your project
+import { useToDoList } from '../contexts/ToDoListContext'; 
 
 export default function ToDoListScreen() {
   const [title, setTitle] = useState("");

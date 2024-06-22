@@ -195,20 +195,7 @@ Extension Features
 - **Serverless Backend**: Firebase
   - Provides a scalable and secure backend for the app without the need for managing servers.
 - **Database**: Firestore
-  - A NoSQL database that provides real-time data synchronization and
-### Extension Features:
-
-5. **Habit Builder and Monthly Challenges:**
-   - Provide monthly challenges for users to build habits and achieve specific goals.
-   - Encourage users to set aside dedicated time for completing activities related to monthly challenges.
-
-6. **Spaced Repetition Tool:**
-   - Helps you keep track of the content you have to study, so you would be able to commit it to your long-term memory.
-
-7. **Study Group and Pomodoro Technique:**
-   - Allow users to form study groups for collaborative tasks and extra points.
-   - Integrate the Pomodoro technique for study sessions, with customizable intervals for study and breaks.
-
+  - A NoSQL database that provides real-time data synchronization 
 ---
 
 ## Architecture and Design

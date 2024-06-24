@@ -44,6 +44,7 @@ export default function App() {
   const [duration, setDuration] = React.useState(60);
   const [key, setKey] = React.useState(0);
   const [noOfPMTimes, setNoOfPMTimes] = React.useState(0);
+  const [customTime, setCustomTime] = React.useState('');
 
   const startPMTimer = () => {
     Alert.alert('Starting Pomodoro timer');
@@ -70,6 +71,7 @@ export default function App() {
     Alert.alert('Stopping Timer');
     setIsPlaying(false);
   };
+  
 
   return (
     <View style={styles.container}>

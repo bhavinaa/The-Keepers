@@ -20,6 +20,12 @@ export default function ToDoListScreen() {
     deleteToDoListItem(id);
   };
 
+  const handleDeleteAll = () => {  
+  toDoList.forEach(item => {
+    deleteToDoListItem(item.id);
+  });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, orderBy } from "firebase/firestore";
 import { db } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
@@ -14,7 +14,7 @@ export const TasksProvider = ({ children }) => {
 
   useEffect(() => {
     if (loggedInUser?.email) {
-      const q = query(collection(db, "todo"), where("email", "==", loggedInUser.email));
+      const q = query(collection(db, "todo"), where("email", "==", loggedInUser.email), orderBy("deadline", "asc"));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const tasksData = {};
         querySnapshot.forEach((doc) => {
@@ -24,7 +24,7 @@ export const TasksProvider = ({ children }) => {
             tasksData[dateKey] = [];
           }
           tasksData[dateKey].push({
-            id: doc.id, // Unique identifier for each task document
+            id: doc.id,
             title: data.title,
             deadline: data.deadline.toDate(),
             completed: data.completed || false

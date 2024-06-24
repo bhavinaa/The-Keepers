@@ -90,13 +90,6 @@ The app aims to address common struggles among students, including:
 
 ##### Authenticated Stack
 Core Features
-- **Goal Setting and Tracking with STAR Technique**
-  - **Description**: This feature enables users to set and track goals using the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) technique.
-  - **Functionality**: Users can set daily, weekly, and semester-wise goals. The app provides progress tracking to ensure users stay on track with their goals.
-  - **Technical Implementation**:
-    - **Frontend**: Form inputs for goal setting, progress tracking UI components.
-    - **Backend**: Store goals and progress data in Firestore, update progress based on user input.
-
 - **Task Organization and Checklist**
   - **Description**: Users can organize tasks into categories and create checklists for each task.
   - **Functionality**:
@@ -135,15 +128,12 @@ Core Features
   - **Interactions**: Retrieves and updates user profile data in Firebase Realtime Database / Firestore.
 
 Extension Features
-
-- **Habit Builder and Monthly Challenges**
-  - **Description**: Provides monthly challenges to help users build habits and achieve specific goals.
-  - **Functionality**:
-    - Monthly habit-building challenges.
-    - Dedicated time tracking for challenge-related activities.
+- **Goal Setting and Tracking with STAR Technique**
+  - **Description**: This feature enables users to set and track goals using the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) technique.
+  - **Functionality**: Users can set daily, weekly, and semester-wise goals. The app provides progress tracking to ensure users stay on track with their goals.
   - **Technical Implementation**:
-    - **Frontend**: Challenge creation and tracking UI.
-    - **Backend**: Store challenge data in Firestore, track progress.
+    - **Frontend**: Form inputs for goal setting, progress tracking UI components.
+    - **Backend**: Store goals and progress data in Firestore, update progress based on user input.
 
 - **Spaced Repetition Tool**
   - **Description**: Assists users in tracking study content to commit it to long-term memory.
@@ -205,20 +195,7 @@ Extension Features
 - **Serverless Backend**: Firebase
   - Provides a scalable and secure backend for the app without the need for managing servers.
 - **Database**: Firestore
-  - A NoSQL database that provides real-time data synchronization and
-### Extension Features:
-
-5. **Habit Builder and Monthly Challenges:**
-   - Provide monthly challenges for users to build habits and achieve specific goals.
-   - Encourage users to set aside dedicated time for completing activities related to monthly challenges.
-
-6. **Spaced Repetition Tool:**
-   - Helps you keep track of the content you have to study, so you would be able to commit it to your long-term memory.
-
-7. **Study Group and Pomodoro Technique:**
-   - Allow users to form study groups for collaborative tasks and extra points.
-   - Integrate the Pomodoro technique for study sessions, with customizable intervals for study and breaks.
-
+  - A NoSQL database that provides real-time data synchronization 
 ---
 
 ## Architecture and Design

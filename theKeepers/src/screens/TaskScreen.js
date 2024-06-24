@@ -28,6 +28,7 @@ export default function TaskScreen({ navigation }) {
       const docRef = await addDoc(collection(db, "todo"), { //update to general id
         email: loggedInUser?.email,
         title: task,
+        completed: false, 
         deadline: Timestamp.fromDate(new Date(date))
       });
       console.log("Document written with ID: ", docRef.id);

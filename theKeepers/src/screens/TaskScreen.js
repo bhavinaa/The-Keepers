@@ -46,7 +46,6 @@ export default function TaskScreen({ navigation }) {
     <View style={styles.taskContainer}>
       <View style={styles.taskInfo}>
         <Text style={styles.taskTitle}>{item.title}</Text>
-        <Text style={styles.taskDeadline}>{item.deadline.toDateString()}</Text>
       </View>
       <TouchableOpacity
         style={styles.checkboxContainer}
@@ -218,11 +217,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#000000",
   },
-  taskDeadline: {
-    fontSize: 14,
-    color: "#888",
-    textAlign: 'right',
-  },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -239,4 +233,3 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
-

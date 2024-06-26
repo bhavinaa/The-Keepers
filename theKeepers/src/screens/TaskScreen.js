@@ -54,35 +54,37 @@ export default function TaskScreen({ navigation }) {
       )}
     >
       <View style={styles.taskContainer}>
-      <View style={styles.taskInfo}>
-        <Text style={styles.taskTitle}>{item.title}</Text>
+        <View style={styles.taskInfo}>
+          <Text style={styles.taskTitle}>{item.title}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={() => toggleTaskCompletion(item.id, item.completed)}
+        >
+          {item.completed ? (
+            <Feather name="check-circle" size={24} color="green" />
+          ) : (
+            <Feather name="circle" size={24} color="black" />
+          )}
+          <Text style={[styles.itemText, item.completed && styles.completedTask]}>
+            {item.title}
+          </Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.checkboxContainer}
-        onPress={() => toggleTaskCompletion(item.id, item.completed)}
-      >
-        {item.completed ? (
-          <Feather name="check-circle" size={24} color="green" />
-        ) : (
-          <Feather name="circle" size={24} color="black" />
-        )}
-        <Text style={[styles.itemText, item.completed && styles.completedTask]}>
-          {item.title}
-        </Text>
-      </TouchableOpacity>
-    </View>
     </Swipeable>
   );
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
-        <FlatList
-          data={Object.keys(tasks).map(key => ({ date: key, data: tasks[key] })).flatMap(item => item.data)}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.taskList}
-        />
+        <View style={styles.taskListContainer}>
+          <FlatList
+            data={Object.keys(tasks).map(key => ({ date: key, data: tasks[key] })).flatMap(item => item.data)}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.taskList}
+          />
+        </View>
 
         <Modal
           animationType='slide'
@@ -112,7 +114,7 @@ export default function TaskScreen({ navigation }) {
               <Text style={styles.buttonText}>Add Task</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.button]}
+              style={[styles.button, styles.buttonClose]}
               onPress={() => setPopVisibility(!popVisible)}
             >
               <Text style={styles.buttonText}>Close</Text>
@@ -202,11 +204,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+  taskListContainer: {
+    height: '100%',
+    width: '100%',
   },
   taskList: {
-    width: "100%",
     padding: 20,
   },
   taskContainer: {

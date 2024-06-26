@@ -18,7 +18,6 @@ function TimeKeeperBottomMenuTabs() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="ToDoList" component={ToDoListScreen} />
       <Tab.Screen name="Pomodaro" component={PomodaroScreen} />
       <Tab.Screen name="Task" component={TaskScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />

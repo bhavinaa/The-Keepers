@@ -28,7 +28,6 @@ export default function TaskScreen({ navigation }) {
         deadline: Timestamp.fromDate(new Date(date))
       });
       console.log("Document written with ID: ", docRef.id);
-      navigation.navigate('Calendar');
       setTask("");
       setDate("");
     } catch (error) {

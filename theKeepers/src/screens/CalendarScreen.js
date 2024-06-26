@@ -8,6 +8,14 @@ import { useTasks } from '../contexts/TasksContext';
 export default function CalendarScreen() {
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
 
+  const renderEmptyData = () => {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>No tasks for this day</Text>
+      </View>
+    );
+  };
+
   const renderItem = (item) => (
     <Swipeable
       renderRightActions={() => (
@@ -41,6 +49,8 @@ export default function CalendarScreen() {
     <SafeAreaView style={styles.container}>
       <Agenda
         items={tasks}
+        showOnlySelectedDayItems={true}
+        renderEmptyData={renderEmptyData}
         renderItem={(item, isFirst) => renderItem(item)}
       />
     </SafeAreaView>

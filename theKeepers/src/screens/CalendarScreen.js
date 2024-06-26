@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Agenda } from 'react-native-calendars';

@@ -6,13 +6,14 @@ import { db } from '../firebase/config';
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
 import { Modal } from 'react-native-paper';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
   const [popVisible, setPopVisibility] = React.useState(false);
   const { loggedInUser } = useAuth();
-  const { tasks, toggleTaskCompletion } = useTasks();
+  const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
 
   const handleAddTask = async () => {
     if (!validateDate(date)) {
@@ -42,7 +43,17 @@ export default function TaskScreen({ navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.taskContainer}>
+    <Swipeable
+      renderRightActions={() => (
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => deleteTask(item.id)}
+        >
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      )}
+    >
+      <View style={styles.taskContainer}>
       <View style={styles.taskInfo}>
         <Text style={styles.taskTitle}>{item.title}</Text>
       </View>
@@ -60,6 +71,7 @@ export default function TaskScreen({ navigation }) {
         </Text>
       </TouchableOpacity>
     </View>
+    </Swipeable>
   );
   
   return (
@@ -230,5 +242,18 @@ const styles = StyleSheet.create({
   completedTask: {
     textDecorationLine: 'line-through',
     color: 'gray',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '75%',
+    marginTop: 10,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

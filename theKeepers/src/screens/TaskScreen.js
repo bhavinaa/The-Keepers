@@ -42,37 +42,38 @@ export default function TaskScreen({ navigation }) {
     return regex.test(date);
   };
 
-  const renderItem = ({ item }) => (
-    <Swipeable
-      renderRightActions={() => (
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => deleteTask(item.id)}
-        >
-          <Text style={styles.deleteButtonText}>Delete</Text>
-        </TouchableOpacity>
-      )}
-    >
-      <View style={styles.taskContainer}>
-        <View style={styles.taskInfo}>
-          <Text style={styles.taskTitle}>{item.title}</Text>
+  const renderItem = ({ item }) => {
+    return (
+      <Swipeable
+        renderRightActions={() => (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => deleteTask(item.id)}
+          >
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
+        )}
+      >
+        <View style={styles.taskContainer}>
+          <View style={styles.taskInfo}>
+            <Text style={styles.taskTitle}>{item.title}</Text>
+            <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.checkboxContainer}
+            onPress={() => toggleTaskCompletion(item.id, item.completed)}
+          >
+            {item.completed ? (
+              <Feather name="check-circle" size={24} color="green" />
+            ) : (
+              <Feather name="circle" size={24} color="black" />
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.checkboxContainer}
-          onPress={() => toggleTaskCompletion(item.id, item.completed)}
-        >
-          {item.completed ? (
-            <Feather name="check-circle" size={24} color="green" />
-          ) : (
-            <Feather name="circle" size={24} color="black" />
-          )}
-          <Text style={[styles.itemText, item.completed && styles.completedTask]}>
-            {item.title}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </Swipeable>
-  );
+      </Swipeable>
+    );
+  };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -234,6 +235,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     flex: 1,
     color: "#000000",
+  },
+  taskDeadline:{
+    fontSize: 14,
+    color: '#696969',
+    marginTop: 4,
   },
   checkboxContainer: {
     flexDirection: 'row',

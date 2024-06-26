@@ -78,6 +78,7 @@ export default function TaskScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.taskListContainer}>
+          <Text style= {styles.header}>Tasks</Text>
           <FlatList
             data={Object.keys(tasks).map(key => ({ date: key, data: tasks[key] })).flatMap(item => item.data)}
             renderItem={renderItem}
@@ -139,10 +140,14 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
+    justifyContent: 'center',
+  },
+  header:{
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginTop: 15,
   },
   input: {
     width: "80%",

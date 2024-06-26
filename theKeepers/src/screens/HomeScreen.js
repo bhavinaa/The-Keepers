@@ -17,35 +17,36 @@ export default function HomeScreen({ navigation }) {
       });
   };
 
-  // Placeholder data (replace with actual data later)
-  const totalPomodoroTime = "2 hours 30 minutes";
-  const totalUserPoints = 150;
-
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.overlay}>
-          {/* Sign out button */}
+          <Text style={styles.welcomeText}>Welcome, Stargazer</Text>
+          <View style={styles.grid}>
           <TouchableOpacity onPress={signOutUser} style={styles.signOutButton}>
             <Text style={styles.signOutButtonText}>Sign Out</Text>
           </TouchableOpacity>
-
-          {/* User statistics section */}
-          <View style={styles.userStatsContainer}>
-            <Text style={styles.welcomeText}>Welcome {loggedInUser ? loggedInUser.name : ''}</Text>
-            {/* Placeholder for user analytics */}
-            <View style={styles.analyticsContainer}>
-              <Text style={styles.analyticsText}>Total Pomodoro Study Time:</Text>
-              <Text style={styles.analyticsValue}>{totalPomodoroTime}</Text>
-              <Text style={styles.analyticsText}>Total User Points:</Text>
-              <Text style={styles.analyticsValue}>{totalUserPoints}</Text>
-            </View>
-          </View>
-
-          {/* Button to navigate to task screen */}
-          <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.taskButton}>
-            <Text style={styles.buttonText}>Task</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.button}>
+            <ImageBackground source = {require('../assets/tasks.jpeg')} style={styles.buttonBackground} imageStyle={styles.buttonImage}>
+              <Text style={styles.buttonText}>Task</Text>
+            </ImageBackground>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Pomodaro')} style={styles.button}>
+          <ImageBackground source = {require('../assets/pomo.jpeg')} style={styles.buttonBackground} imageStyle={styles.buttonImage}>
+              <Text style={styles.buttonText}>Pomodaro</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Calendar')} style={styles.button}>
+            <ImageBackground source = {require('../assets/cal.jpeg')} style={styles.buttonBackground} imageStyle={styles.buttonImage}>
+              <Text style={styles.buttonText}>Calendar</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button}>
+          <ImageBackground source = {require('../assets/prof.jpeg')} style={styles.buttonBackground} imageStyle={styles.buttonImage}>
+              <Text style={styles.buttonText}>Profile</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+          </View>
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)', // Adds a semi-transparent overlay
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -73,50 +73,47 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
   },
-  userStatsContainer: {
-    flex: 1, // Takes up the entire available space in the overlay
-    justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
-    marginTop: 50, // Moves the user stats section towards the top half of the screen
-    width: '80%', // Adjusts the width of the user stats container
+  grid: {
+    width: '100%',
+    height: '50%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
-  analyticsContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 20,
+  buttonBackground: {
+    flex: 1,
+    justifyContent: 'top',
     alignItems: 'center',
+    paddingTop: 10,
   },
-  analyticsText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+  buttonImage: {
+    borderColor: "#8a2be2",
+    borderWidth: 2,
+    borderRadius: 20,
   },
-  analyticsValue: {
-    color: 'white',
-    fontSize: 14,
-  },
-  taskButton: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#1E90FF',
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
+  button: {
+    borderRadius: 20,
+    width: '48%',
+    aspectRatio: 1,
+    marginBottom: 15,
+    overflow: 'hidden'
+    
   },
   buttonText: {
-    color: 'white',
+    color: '#d8bfd8',
     fontSize: 16,
     fontWeight: 'bold',
   },
   signOutButton: {
+    backgroundColor: '#302298',
+    width: 100,
+    height: 50,
+    borderRadius: 10, 
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: -150,
+    right: -8,
     position: 'absolute',
-    top: 40,
-    right: 20,
-    padding: 10,
-    backgroundColor: '#FF6347',
-    borderRadius: 5,
   },
   signOutButtonText: {
     color: 'white',

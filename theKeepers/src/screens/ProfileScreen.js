@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, ImageBackground, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
-import { collection, doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function ProfileScreen({ navigation }) {
   const { loggedInUser } = useAuth();
@@ -12,11 +12,12 @@ export default function ProfileScreen({ navigation }) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDoc = await db.collection('users').doc(loggedInUser.uid).get();
-        if (userDoc.exists) {
+        const userDoc = await getDoc(doc(db, 'Users', loggedInUser.email));
+        if (userDoc.exists()) {
           const userData = userDoc.data();
-          setUsername(userData.username || ''); // Ensure username is initialized
+          setUsername(userData.username);
         } else {
+          setUsername("");
           console.log('No such document!');
         }
       } catch (error) {
@@ -28,6 +29,7 @@ export default function ProfileScreen({ navigation }) {
       fetchUserData();
     }
   }, [loggedInUser]);
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     width: '80%',
-    marginTop: 50, // Adjust the marginTop to move the user info up
+    marginTop: 50,
   },
   infoItem: {
     marginBottom: 15,

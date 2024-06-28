@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { authentication } from "../firebase/config";
 import { signInWithEmailAndPassword,  sendPasswordResetEmail } from "firebase/auth";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth, getAuth } from "../contexts/AuthContext";
 import {the_background} from "../assets/the_background.png";
+
 
 import {
   View,
@@ -34,16 +35,18 @@ export default function ForgetPassword({navigation}) {
 
   // context is not running yet
   const handleForgetPassword = () => {
+    console.log("auth:", auth);
+    console.log("email:", email);
+  
     sendPasswordResetEmail(auth, email)
-    .then(() => {
-      Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
-    })
-    .catch((error) => {
-      Alert.alert('Error', error.message);
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
-    
+      .then(() => {
+        Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+      })
+      .catch((error) => {
+        Alert.alert('Error', error.message);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
   };
 
   return (
@@ -95,10 +98,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: '#fffff0',
-    textAlign: 'center', // Ensures text alignment in the text component itsel
+    textAlign: 'center', 
   },
   input: {
-    width: "100%", // Adjusted width for wider input boxes
+    width: "100%", 
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 14,
-    width: "90%", // Adjusted width for the button to match input boxes
+    width: "90%", 
     height: 50,
     alignItems: "center",
     justifyContent: "center",

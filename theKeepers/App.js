@@ -21,13 +21,20 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.flexContainer}>
       <ImageBackground source={require('./src/assets/the_background.png')} resizeMode="cover" style={styles.image}>
+        
         <AuthProvider>
+
           <ToDoListProvider>
+
             <TasksProvider>
               <AppContent />
             </TasksProvider>
+
           </ToDoListProvider>
+
         </AuthProvider>
+
+
       </ImageBackground>
     </GestureHandlerRootView>
   );

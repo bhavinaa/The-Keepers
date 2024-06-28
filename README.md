@@ -87,7 +87,7 @@ Core Features
 - **Task Organization and Checklist**
   - **Description**: Users can organize tasks into categories and create checklists for each task.
   - **Functionality**:
-    - Group tasks by categories (e.g., workout, study).
+    - Group tasks by categories (e.g., workout, study). [milestone 3]
     - Create and manage personalized checklists for each task.
   - **Technical Implementation**:
     - **Frontend**: Task and checklist creation UI, category filters.
@@ -102,15 +102,6 @@ Core Features
     - **Frontend**: Timer UI components, session tracking.
     - **Backend**: Store session data in Firestore, update session history.
 
-- **Reward System**
-  - **Description**: Users earn rewards (coins or gems) upon completing tasks.
-  - **Functionality**:
-    - Track user task completion.
-    - Award coins or gems as rewards.
-  - **Technical Implementation**:
-    - **Frontend**: Display rewards UI, update reward balance.
-    - **Backend**: Store rewards data in Firestore, update rewards based on task completion.
-
 - **Calendar Integration**
   - **Purpose**: Helps users manage their schedule by integrating tasks with their calendar.
   - **Functionality**: Users can add tasks to their calendar, view upcoming tasks, and receive reminders.
@@ -122,21 +113,21 @@ Core Features
   - **Interactions**: Retrieves and updates user profile data in Firebase Realtime Database / Firestore.
 
 Extension Features
+- **Reward System**
+  - **Description**: Users earn rewards (coins or gems) upon completing tasks.
+  - **Functionality**:
+    - Track user task completion.
+    - Award coins or gems as rewards.
+  - **Technical Implementation**:
+    - **Frontend**: Display rewards UI, update reward balance.
+    - **Backend**: Store rewards data in Firestore, update rewards based on task completion.
+   
 - **Goal Setting and Tracking with STAR Technique**
   - **Description**: This feature enables users to set and track goals using the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) technique.
   - **Functionality**: Users can set daily, weekly, and semester-wise goals. The app provides progress tracking to ensure users stay on track with their goals.
   - **Technical Implementation**:
     - **Frontend**: Form inputs for goal setting, progress tracking UI components.
     - **Backend**: Store goals and progress data in Firestore, update progress based on user input.
-
-- **Spaced Repetition Tool**
-  - **Description**: Assists users in tracking study content to commit it to long-term memory.
-  - **Functionality**:
-    - Schedule study sessions for spaced repetition.
-    - Track study content and intervals.
-  - **Technical Implementation**:
-    - **Frontend**: Study session scheduling UI.
-    - **Backend**: Store study content and schedule in Firestore, update based on user input.
 
 - **Study Group and Pomodoro Technique**
   - **Description**: Allows users to form study groups for collaborative tasks and extra points, integrating the Pomodoro technique.

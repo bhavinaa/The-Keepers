@@ -31,9 +31,9 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.buttonText}>Task</Text>
             </ImageBackground>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Pomodaro')} style={styles.button}>
+          <TouchableOpacity onPress={() => navigation.navigate('Pomodoro')} style={styles.button}>
           <ImageBackground source = {require('../assets/pomo.jpeg')} style={styles.buttonBackground} imageStyle={styles.buttonImage}>
-              <Text style={styles.buttonText}>Pomodaro</Text>
+              <Text style={styles.buttonText}>Pomodoro</Text>
             </ImageBackground>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Calendar')} style={styles.button}>

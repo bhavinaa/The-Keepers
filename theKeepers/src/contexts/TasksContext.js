@@ -14,7 +14,7 @@ export const TasksProvider = ({ children }) => {
 
   useEffect(() => {
     if (loggedInUser?.email) {
-      const q = query(collection(db, "todo"), where("email", "==", loggedInUser.email), orderBy("deadline", "asc"));
+      const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), orderBy("deadline", "asc"));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const tasksData = {};
         querySnapshot.forEach((doc) => {

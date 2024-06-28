@@ -76,7 +76,7 @@ const EditProfileScreen = ({ navigation }) => {
                     </TouchableOpacity>
                     <Text style={styles.username}>{username}</Text>
                 </View>
-                <Button title="Save" onPress={() => navigation.navigate('ProfileScreen')} />
+                <Button title="Save" onPress={() => navigation.navigate('Profile')} />
             </ImageBackground>
         </SafeAreaView>
     );

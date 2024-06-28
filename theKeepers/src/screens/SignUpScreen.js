@@ -1,19 +1,9 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  SafeAreaView,
-  ImageBackground,
-} from "react-native";
-
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator, SafeAreaView, ImageBackground } from "react-native";
 import { authentication, db } from "../firebase/config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
-import { addDoc, collection, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, doc } from "firebase/firestore";
 
 export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState("");

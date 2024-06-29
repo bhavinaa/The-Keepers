@@ -197,6 +197,16 @@ Our app follows a client-server architecture, with the frontend developed using 
 ### Prerequisites
 Required software, hardware, and environment setup.
 
+### For Android Users Only 
+![image](https://github.com/bhavinaa/The-Keepers/assets/142370200/2f18c9c5-72dd-440b-b8df-4179d3ec713a)
+
+
+For android users, you are able to scan this link and test out this app on your phone
+or you can click this link to be direced to the download
+https://expo.dev/accounts/thekeepers/projects/test02/builds/988fdff9-5c5b-46e0-bf84-e242d5ace36b
+
+
+
 ### IDE / Code Editor Setup
 1. Clone the repository.
 2. Install Node.js, if you haven't already.

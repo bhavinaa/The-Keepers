@@ -61,69 +61,6 @@ The app aims to address common struggles among students, including:
 
 ### High-Level Architecture Diagram
   
-                     +----------------------+
-                     |                      |
-                     |   Firebase Backend   |
-                     |                      |
-                     +----------------------+
-                     |   Authentication     |
-                     |   Firestore          |
-                     |   Storage            |
-                     +----------------------+
-                               |
-                               |
-                      +----------------+
-                      | React Native    |
-                      | Frontend        |
-                      +----------------+
-                               |
-           +-------------------+-------------------+
-           |                   |                   |
-+----------------+    +----------------+    +----------------+
-|   Guest Stack  |    |    App Stack   |    |   Contexts     |
-|                |    |                |    |                |
-+----------------+    +----------------+    +----------------+
-           |                                    |
-           |                                    |
-+----------+----------+            +------------+------------+
-|  Login Screen       |            |  Stack Navigator        |
-|  Sign Up Screen     |            |   +-------------------+ |
-|  Forgot Password    |            |   |  Main Screen      | |
-+---------------------+            |   |  EditProfile      | |
-                                    |   +-------------------+ |
-                                    |                        |
-                                    +------------------------+
-                                                |
-                                                |
-                                +---------------+---------------+
-                                | Bottom Tab Navigator          |
-                                +-------------------------------+
-                                |  Pomodoro Screen              |
-                                |  Home Screen                  |
-                                |  Profile Screen               |
-                                |  Task Screen                  |
-                                +-------------------------------+
-
-+---------------------+
-|   Auth Context      |
-|   (Authentication)  |
-+---------------------+
-+---------------------+
-|   Task Context      |
-|   (Task Management) |
-+---------------------+
-
-                               +----------------------+
-                               |                      |
-                               | Firestore Database   |
-                               |                      |
-                               +----------------------+
-                               | Users Collection     |
-                               |   - Email            |
-                               |   - Tasks Subcollection|
-                               +----------------------+
-
-
 ### Components Description
 
 #### User Interface (UI)

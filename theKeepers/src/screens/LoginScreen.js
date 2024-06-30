@@ -38,6 +38,7 @@ export default function LoginScreen({ navigation }) {
       })
       .catch((err) => {
         setError("Incorrect Email/Password"); // Set the error message state
+        alert("Incorrect Email/Password");
       })
       .finally(() => {
         setIsLoading(false); 

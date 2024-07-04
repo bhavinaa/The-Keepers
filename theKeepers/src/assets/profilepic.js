@@ -1,0 +1,1 @@
+export const profilepic = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiA4l4VAG5RWHacN7aYggy-wFVaYfXiA5fg&s';

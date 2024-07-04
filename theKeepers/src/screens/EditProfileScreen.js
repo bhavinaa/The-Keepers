@@ -3,76 +3,79 @@ import { View, Text, SafeAreaView, ImageBackground, StyleSheet, Button, Image, T
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../contexts/AuthContext';
 import { db, storage } from '../firebase/config';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, collection, setDoc, getDoc, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { profilepic } from '../assets/profilepic';
 
 const EditProfileScreen = ({ navigation }) => {
     const { loggedInUser } = useAuth();
     const [image, setImage] = useState(null);
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState();
+    const ref = collection(db, "Profile");
+
+    useEffect(() => {
+        const unsubscribeImage = onSnapshot(doc(db, 'Profile', loggedInUser?.email), (doc) => {
+          if (doc.exists()) {
+            const userData = doc.data();
+            setImage(userData?.url || profilepic);
+          } else {
+            setImage(profilepic);
+          }
+        }, (error) => {
+          console.error("Error fetching user document:", error);
+          setImage(profilepic);
+        });
+    
+        const unsubscribeUsername = onSnapshot(doc(db, 'Users', loggedInUser?.email), (doc) => {
+          if (doc.exists()) {
+            const userData = doc.data();
+            setUsername(userData?.username || 'Stargazer');
+          } else {
+            setUsername('Stargazer');
+          }
+        }, (error) => {
+          console.error("Error fetching user document:", error);
+          setUsername('Stargazer');
+        });
+    
+        // Cleanup subscriptions on unmount
+        return () => {
+          unsubscribeImage();
+          unsubscribeUsername();
+        };
+      }, [loggedInUser]);
+    
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
           allowsEditing: true,
-          aspect: [4, 3],
+          aspect: [4, 4],
           quality: 1,
         });
 
         if (!result.canceled) {
-          const imageUri = result.assets[0].uri;
-          setImage(imageUri); // Update the state to display the image immediately
-          await uploadImage(imageUri);
+          setImage(result.assets[0].uri);
+          try {
+            await setDoc(doc(ref, loggedInUser?.email), {
+              url: result.assets[0].uri,
+            });
+            console.log("Document successfully written!");
+          } catch (error) {
+            console.error("Error adding document: ", error);
+            alert('Failed to save user data');
+          }
+        
         }
     };
-
-    const uploadImage = async (uri) => {
-        if (loggedInUser) {
-            const response = await fetch(uri);
-            const blob = await response.blob();
-            const storageRef = ref(storage, `profileImages/${loggedInUser.email}`);
-            await uploadBytes(storageRef, blob);
-
-            const downloadURL = await getDownloadURL(storageRef);
-            await setDoc(doc(db, 'Users', loggedInUser.email), { imageUrl: downloadURL }, { merge: true });
-
-            setImage(downloadURL); // Update the state to use the URL from Firebase
-        }
-    };
-
-    const fetchUserData = async () => {
-        try {
-            const userDoc = await getDoc(doc(db, 'Users', loggedInUser.email));
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                setUsername(userData.username);
-                if (userData.imageUrl) {
-                    setImage(userData.imageUrl);
-                }
-            } else {
-                console.log('No such document!');
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (loggedInUser) {
-            fetchUserData();
-        }
-    }, [loggedInUser]);
+ 
 
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
                 <View style={styles.overlay}>
                     <TouchableOpacity onPress={pickImage} style={styles.profileIcon}>
-                        {image ? (
-                            <Image source={{ uri: image }} style={styles.profileImage} />
-                        ) : (
-                            <Text style={styles.initials}>{username.charAt(0).toUpperCase()}</Text>
-                        )}
+                        <Image source={{ uri: image }} style={styles.profileImage}/>
                     </TouchableOpacity>
                     <Text style={styles.username}>{username}</Text>
                 </View>

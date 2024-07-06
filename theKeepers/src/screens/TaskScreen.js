@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import Feather from 'react-native-vector-icons/Feather';
 import { db } from '../firebase/config'; 
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
 import { Modal } from 'react-native-paper';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import TaskItem from '../components/TaskItem';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
@@ -42,38 +41,13 @@ export default function TaskScreen({ navigation }) {
     return regex.test(date);
   };
 
-  const renderItem = ({ item }) => {
-    return (
-      <Swipeable
-        renderRightActions={() => (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => deleteTask(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        )}
-      >
-        <View style={styles.taskContainer}>
-          <View style={styles.taskInfo}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.checkboxContainer}
-            onPress={() => toggleTaskCompletion(item.id, item.completed)}
-          >
-            {item.completed ? (
-              <Feather name="check-circle" size={24} color="green" />
-            ) : (
-              <Feather name="circle" size={24} color="black" />
-            )}
-          </TouchableOpacity>
-        </View>
-      </Swipeable>
-    );
-  };
-  
+  const renderItem = ({ item }) => (
+    <TaskItem 
+      item={item} 
+      toggleTaskCompletion={toggleTaskCompletion} 
+      deleteTask={deleteTask} 
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,7 +55,7 @@ export default function TaskScreen({ navigation }) {
         <View style={styles.taskListContainer}>
           <Text style= {styles.header}>Tasks</Text>
           <FlatList
-            data={Object.keys(tasks).map(key => ({ date: key, data: tasks[key] })).flatMap(item => item.data)}
+            data={tasks}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.taskList}
@@ -213,60 +187,10 @@ const styles = StyleSheet.create({
   taskListContainer: {
     height: '100%',
     width: '100%',
+    paddingBottom:40
   },
   taskList: {
     padding: 20,
   },
-  taskContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 10,
-    width: "100%",
-  },
-  taskInfo: {
-    flex: 1,
-    color: "#000000",
-  },
-  taskTitle: {
-    fontSize: 18,
-    flex: 1,
-    color: "#000000",
-  },
-  taskDeadline:{
-    fontSize: 14,
-    color: '#696969',
-    marginTop: 4,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  itemText: {
-    color: 'black',
-    fontSize: 17,
-    marginLeft: 10,
-    flex: 1,
-  },
-  completedTask: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
-  },
-  deleteButton: {
-    backgroundColor: '#302298',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '75%',
-    marginTop: 10,
-    borderRadius: 10,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
 });
+

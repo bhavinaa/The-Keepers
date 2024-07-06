@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
-class TaskItem extends PureComponent {
+class CalendarItem extends PureComponent {
   render() {
     const { item, toggleTaskCompletion, deleteTask } = this.props;
 
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 10,
     width: "100%",
+    backgroundColor:"lightblue"
   },
   taskInfo: {
     flex: 1,
@@ -91,5 +92,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskItem;
+export default CalendarItem;
+
 

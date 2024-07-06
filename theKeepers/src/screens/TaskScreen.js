@@ -11,12 +11,14 @@ export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
   const [popVisible, setPopVisibility] = React.useState(false);
+  const [popCat, setCatVisibility] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState("");
   const { loggedInUser } = useAuth();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
 
   const handleAddTask = async () => {
     if (!validateDate(date)) {
-      alert('Please enter the date in yyyy-mm-dd format'); // check format
+      alert('Please enter the date in yyyy-mm-dd format');
       return;
     }
 
@@ -25,15 +27,24 @@ export default function TaskScreen({ navigation }) {
         email: loggedInUser?.email,
         title: task,
         completed: false, 
-        deadline: Timestamp.fromDate(new Date(date))
+        deadline: Timestamp.fromDate(new Date(date)),
+        category: selectedCategory
       });
-      console.log("Document written with ID: ", docRef.id);
+      console.log("Document written with ID: ", docRef.id, selectedCategory);
       setTask("");
       setDate("");
+      setSelectedCategory("");
     } catch (error) {
       console.error("Error adding document in taskscreen: ", error);
       alert('Failed to add task');
     }
+
+    setPopVisibility(false);
+  };
+
+  const handleAddCategory = () => {
+
+    setCatVisibility(false);
   };
 
   const validateDate = (date) => {
@@ -85,14 +96,44 @@ export default function TaskScreen({ navigation }) {
               value={date}
               onChangeText={(date) => setDate(date)}
             />
+            <View style = {styles.row}>
+              <Text>Category</Text>
+              <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
+                <Text style={styles.buttonCatText}>{selectedCategory || "Select Category >"}</Text>
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity onPress={handleAddTask} style={styles.button}>
               <Text style={styles.buttonText}>Add Task</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setPopVisibility(!popVisible)}
-            >
+
+            <TouchableOpacity style={styles.button} onPress={() => setPopVisibility(!popVisible)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType='slide'
+          visible={popCat}
+          onRequestClose={() => {
+            setPopVisibility(!popCat);
+          }}
+        >
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="none"
+              placeholderTextColor="#696969"
+              value={selectedCategory}
+              onChangeText={(selectedCategory) => setSelectedCategory(selectedCategory)}
+            />
+
+            <TouchableOpacity onPress={handleAddCategory} style={styles.button}>
+              <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -141,7 +182,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 14,
-    width: "80%",
+    width: "100%",
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonCat: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    margin: 14,
+    width: "60%",
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -150,6 +201,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: '#fffff0',
+    textAlign: 'center',
+  },
+  buttonCatText: {
+    fontSize: 16,
+    color: 'black',
     textAlign: 'center',
   },
   addButton: {
@@ -191,6 +247,11 @@ const styles = StyleSheet.create({
   },
   taskList: {
     padding: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
   },
 });
 

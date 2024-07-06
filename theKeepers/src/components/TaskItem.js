@@ -6,8 +6,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 class TaskItem extends PureComponent {
   render() {
     const { item, toggleTaskCompletion, deleteTask } = this.props;
-
-    return (
+       return (
       <Swipeable
         renderRightActions={() => (
           <TouchableOpacity
@@ -23,8 +22,14 @@ class TaskItem extends PureComponent {
             <Text style={[styles.taskTitle, item.completed && styles.completedTask]}>
               {item.title}
             </Text>
-            <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
+
+            <View style={styles.row}>
+              <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
+              <Text style={styles.taskCategory}>{item.category}</Text>
+            </View>
+
           </View>
+            
           <TouchableOpacity
             style={styles.checkboxContainer}
             onPress={() => toggleTaskCompletion(item.id, item.completed)}
@@ -66,6 +71,11 @@ const styles = StyleSheet.create({
     color: '#696969',
     marginTop: 4,
   },
+  taskCategory: {
+    fontSize: 14,
+    color: '#696969',
+    marginTop: 4,
+  },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -88,6 +98,10 @@ const styles = StyleSheet.create({
   completedTask: {
     textDecorationLine: 'line-through',
     color: 'gray',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
   },
 });
 

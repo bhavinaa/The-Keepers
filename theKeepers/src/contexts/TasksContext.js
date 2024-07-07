@@ -24,6 +24,7 @@ export const TasksProvider = ({ children }) => {
             title: data.title,
             deadline: data.deadline.toDate(),
             completed: data.completed || false,
+            category: data.category || ''
           });
         });
         setTasks(tasksData);

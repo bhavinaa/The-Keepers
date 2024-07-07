@@ -25,7 +25,7 @@ class TaskItem extends PureComponent {
 
             <View style={styles.row}>
               <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
-              <Text style={styles.taskCategory}>{item.category}</Text>
+              <Text style={styles.taskDeadline}>{item.category}</Text>
             </View>
 
           </View>
@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'stretch',
+    justifyContent: 'space-between',
+    width: '90%'
   },
 });
 

@@ -8,6 +8,7 @@ import PomodaroScreen from "../screens/PomodaroScreen";
 import CalendarScreen from "../screens/CalendarScreen";
 import { Ionicons } from '@expo/vector-icons';
 import EditProfileScreen from "../screens/EditProfileScreen";
+import GoalScreen from "../screens/GoalScreen";
 import { Screen } from "react-native-screens";
 
 const Stack = createNativeStackNavigator();
@@ -74,6 +75,11 @@ const AppStack = () => {
       <Stack.Screen 
         name="Main" 
         component={TimeKeeperBottomMenuTabs} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="Goal" 
+        component={GoalScreen} 
         options={{ headerShown: false }}
       />
       <Stack.Screen 

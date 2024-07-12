@@ -1,0 +1,222 @@
+import React from 'react';
+import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
+import { addDoc, collection } from "firebase/firestore";
+import { Modal } from 'react-native-paper';
+import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase/config';
+
+export default function GoalScreen({ navigation }) {
+    const [popVisible, setPopVisibility] = React.useState(false);
+    const [title, setTitle] = React.useState("");
+    const [description, setDescription] = React.useState("");
+    const [selectedReminder, setSelectedReminder] = React.useState("");
+    const [date, setDate] = React.useState("");
+    const [reVisible, setReVisibilitty] = React.useState(false);
+    const { loggedInUser } = useAuth();
+    
+    const handleAddGoal = async() => {
+        try {
+            const docRef = await addDoc(collection(db, 'goal'), {
+                email: loggedInUser?.email,
+                title: title,
+                description: description,
+                deadline: date,
+                reminder: selectedReminder
+            });
+            console.log("Document written with ID: ", docRef.id);
+            alert("Goal added successfully!");
+        } catch(error) {
+            console.error("Error", error);
+            alert("Failed to add goal");
+        }
+        setTitle("");
+        setDescription("");
+        setSelectedReminder("");
+        setDate("");
+        setPopVisibility(false);
+    };
+
+    const handleAddReminder = async(re) => {
+        setSelectedReminder(re);
+        setReVisibilitty(false);
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <ImageBackground source={require('../assets/the_background.png')} resizeMode='cover' style={styles.image}>
+                <Modal
+                    animationType='slide'
+                    visible={popVisible}
+                    onRequestClose={() => {
+                        setPopVisibility(!popVisible);
+                    }}
+                >   
+                    <View style={styles.modalView}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Title"
+                            placeholderTextColor="#696969"
+                            value={title}
+                            onChangeText={(title) => setTitle(title)}
+                        />
+
+                        <TextInput
+                            style={styles.buttonDes}
+                            placeholder="Description"
+                            placeholderTextColor="#696969"
+                            value={description}
+                            onChangeText={(description) => setDescription(description)}
+                        />
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Deadline"
+                            placeholderTextColor="#696969"
+                            value={date}
+                            onChangeText={(date) => setDate(date)}
+                        />
+
+                        <View style={styles.row}>
+                            <Text style={styles.rem}>Reminder</Text>
+                            <TouchableOpacity onPress={() => setReVisibilitty(true)} style={styles.buttonCat}>
+                                <Text style={styles.buttonText}>{selectedReminder || "Never >"}</Text>
+                            </TouchableOpacity>
+                        </View>
+                        
+                        <TouchableOpacity onPress={handleAddGoal} style={styles.button}>
+                            <Text style={styles.buttonText}>Add Goal</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.button} onPress={() => setPopVisibility(!popVisible)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+
+                <Modal
+                    animationType='slide'
+                    visible={reVisible}
+                    onRequestClose={() => {
+                        setReVisibilitty(!reVisible);
+                    }}
+                >
+                    <View style={styles.modalView}>
+                        <Text style={styles.title}>Reminder</Text>
+                        <TouchableOpacity onPress={() => handleAddReminder("Every Day")} style={styles.button}>
+                            <Text style={styles.buttonText}>Every Day</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleAddReminder("Every Week")} style={styles.button}>
+                            <Text style={styles.buttonText}>Every Week</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleAddReminder("Every Month")} style={styles.button}>
+                            <Text style={styles.buttonText}>Every Month</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleAddReminder("Every Year")} style={styles.button}>
+                            <Text style={styles.buttonText}>Every Year</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleAddReminder("Never")} style={styles.button}>
+                            <Text style={styles.buttonText}>Never</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={() => setReVisibilitty(!reVisible)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={() => setPopVisibility(true)} style={styles.addButton}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+            </ImageBackground>
+        </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "#333333",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    input: {
+        height: 40,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10, 
+        borderColor: "white",
+        width: "100%",
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 15,
+    },
+    button: {
+        backgroundColor: "#302298",
+        borderRadius: 20,
+        padding: 10,
+        margin: 14,
+        width: "100%",
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonDes:{
+        height: 100,
+        margin: 12,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 10, 
+        borderColor: "white",
+        width: "100%",
+        textAlignVertical: 'top',
+    }, 
+    buttonText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: '#fffff0',
+        textAlign: 'center',
+    },
+    buttonCat: {
+        marginLeft: 10,
+        padding: 10,
+        borderRadius: 10,
+    },
+    addButton: {
+        backgroundColor: "#302298",
+        width: 50,
+        height: 50,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: 30,
+        right: 30,
+    },
+    title: {
+        color: "white", 
+        fontSize: 20,
+        fontWeight: "bold",
+    }, 
+    rem: {
+        color: "white", 
+        fontSize: 20,
+        fontWeight: "bold",
+    }
+});

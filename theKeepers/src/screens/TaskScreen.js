@@ -8,6 +8,7 @@ import { useCat} from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
 import TaskItem from '../components/TaskItem';
 import CatItem from '../components/CatItem';
+import GoalScreen from '../screens/GoalScreen';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
@@ -167,13 +168,13 @@ export default function TaskScreen({ navigation }) {
               keyExtractor={(item) => item.id}
               contentContainerStyle={styles.taskList}
             />
-            
-            <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
               <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
+              <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -209,6 +210,13 @@ export default function TaskScreen({ navigation }) {
           onPress={() => setPopVisibility(true)}
         >
           <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.addButtonGoal}
+          onPress={() => navigation.navigate('Goal')}
+        >
+          <Text style={styles.addButtonText}>G</Text>
         </TouchableOpacity>
       </ImageBackground>
     </SafeAreaView>
@@ -275,13 +283,24 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: "#302298",
-    width: 60,
-    height: 60, 
+    width: 50,
+    height: 50, 
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: 30,
-    right: 30,
+    top: 15,
+    right: 25,
+    position: 'absolute',
+  },
+  addButtonGoal: {
+    backgroundColor: "#302298",
+    width: 50,
+    height: 50, 
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 15,
+    right: 90, 
     position: 'absolute',
   },
   addButtonText: {

@@ -4,17 +4,22 @@ import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from '../firebase/config'; 
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
+import { useCat} from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
 import TaskItem from '../components/TaskItem';
+import CatItem from '../components/CatItem';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
   const [popVisible, setPopVisibility] = React.useState(false);
   const [popCat, setCatVisibility] = React.useState(false);
+  const [popAddCat, setAddCatVisibility] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState("");
+  const [selectNewCat, setSelectedNewCat] = React.useState("");
   const { loggedInUser } = useAuth();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
+  const {cat, deleteCat} = useCat();
 
   const handleAddTask = async () => {
     if (!validateDate(date)) {
@@ -43,7 +48,6 @@ export default function TaskScreen({ navigation }) {
   };
 
   const handleAddCategory = () => {
-
     setCatVisibility(false);
   };
 
@@ -52,13 +56,49 @@ export default function TaskScreen({ navigation }) {
     return regex.test(date);
   };
 
-  const renderItem = ({ item }) => (
+  const renderTaskItem = ({ item }) => (
     <TaskItem 
       item={item} 
       toggleTaskCompletion={toggleTaskCompletion} 
       deleteTask={deleteTask} 
     />
   );
+
+  const selectCategory = (category) => {
+    setSelectedCategory(category);
+    setCatVisibility(false);
+  };
+
+  const renderCatItem = ({ item }) => (
+    <CatItem 
+    cat={item} 
+    selectCategory={selectCategory} 
+    deleteCat={deleteCat} 
+    />
+  );
+
+
+
+  const addCat = async () => {
+    if (selectNewCat == "") {
+      alert('Please enter a category');
+      return;
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, "category"), {
+        email: loggedInUser?.email,
+        cat: selectNewCat
+      });
+      console.log("Document written with ID: ", docRef.id, selectNewCat);
+      setSelectedNewCat("");
+    } catch (error) {
+      console.error("Error adding category document in taskscreen: ", error);
+      alert('Failed to add a new category');
+    }
+
+    setAddCatVisibility(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -67,7 +107,7 @@ export default function TaskScreen({ navigation }) {
           <Text style= {styles.header}>Tasks</Text>
           <FlatList
             data={tasks}
-            renderItem={renderItem}
+            renderItem={renderTaskItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.taskList}
           />
@@ -121,19 +161,44 @@ export default function TaskScreen({ navigation }) {
           }}
         >
           <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              placeholder="none"
-              placeholderTextColor="#696969"
-              value={selectedCategory}
-              onChangeText={(selectedCategory) => setSelectedCategory(selectedCategory)}
+            <FlatList
+              data = {cat}
+              renderItem={renderCatItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.taskList}
             />
-
-            <TouchableOpacity onPress={handleAddCategory} style={styles.button}>
-              <Text style={styles.buttonText}>Add Category</Text>
-            </TouchableOpacity>
             
             <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
+              <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType='slide'
+          visible={popAddCat}
+          onRequestClose={() => {
+            setAddCatVisibility(!popAddCat);
+          }}
+        >
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Category"
+              placeholderTextColor="#696969"
+              value={selectNewCat}
+              onChangeText={(selectNewCat) => setSelectedNewCat(selectNewCat)}
+            />
+
+            <TouchableOpacity onPress={addCat} style={styles.button}>
+              <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(!popAddCat)}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -254,4 +319,3 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
 });
-

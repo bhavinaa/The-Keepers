@@ -2,7 +2,23 @@
   "expo": {
     "name": "test02",
     "slug": "test02",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "3d74d242-7c14-4313-befe-b90f0bba69fb"
+      }
+    },
+    "android": {
+      "package": "com.thekeepers.test02"
+    },
+    "splash": {
+      "image": "./src/assets/the_background.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.thekeepers.test02"
+    }
   },
   "name": "test02"
 }

@@ -8,26 +8,23 @@ const TasksContext = createContext();
 export const useTasks = () => useContext(TasksContext);
 
 export const TasksProvider = ({ children }) => {
-  const [tasks, setTasks] = useState({});
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const { loggedInUser } = useAuth();
 
   useEffect(() => {
     if (loggedInUser?.email) {
-      const q = query(collection(db, "todo"), where("email", "==", loggedInUser.email), orderBy("deadline", "asc"));
+      const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), orderBy("deadline", "asc"));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const tasksData = {};
+        const tasksData = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          const dateKey = data.deadline.toDate().toISOString().split('T')[0];
-          if (!tasksData[dateKey]) {
-            tasksData[dateKey] = [];
-          }
-          tasksData[dateKey].push({
+          tasksData.push({
             id: doc.id,
             title: data.title,
             deadline: data.deadline.toDate(),
-            completed: data.completed || false
+            completed: data.completed || false,
+            category: data.category || ''
           });
         });
         setTasks(tasksData);
@@ -54,3 +51,4 @@ export const TasksProvider = ({ children }) => {
     </TasksContext.Provider>
   );
 };
+

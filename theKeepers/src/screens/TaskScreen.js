@@ -1,23 +1,30 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import Feather from 'react-native-vector-icons/Feather';
 import { db } from '../firebase/config'; 
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
+import { useCat} from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import TaskItem from '../components/TaskItem';
+import CatItem from '../components/CatItem';
+import GoalScreen from '../screens/GoalScreen';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
   const [date, setDate] = React.useState("");
   const [popVisible, setPopVisibility] = React.useState(false);
+  const [popCat, setCatVisibility] = React.useState(false);
+  const [popAddCat, setAddCatVisibility] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState("");
+  const [selectNewCat, setSelectedNewCat] = React.useState("");
   const { loggedInUser } = useAuth();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
+  const {cat, deleteCat} = useCat();
 
   const handleAddTask = async () => {
     if (!validateDate(date)) {
-      alert('Please enter the date in yyyy-mm-dd format'); // check format
+      alert('Please enter the date in yyyy-mm-dd format');
       return;
     }
 
@@ -26,15 +33,23 @@ export default function TaskScreen({ navigation }) {
         email: loggedInUser?.email,
         title: task,
         completed: false, 
-        deadline: Timestamp.fromDate(new Date(date))
+        deadline: Timestamp.fromDate(new Date(date)),
+        category: selectedCategory
       });
-      console.log("Document written with ID: ", docRef.id);
+      console.log("Document written with ID: ", docRef.id, selectedCategory);
       setTask("");
       setDate("");
+      setSelectedCategory("");
     } catch (error) {
       console.error("Error adding document in taskscreen: ", error);
       alert('Failed to add task');
     }
+
+    setPopVisibility(false);
+  };
+
+  const handleAddCategory = () => {
+    setCatVisibility(false);
   };
 
   const validateDate = (date) => {
@@ -42,38 +57,49 @@ export default function TaskScreen({ navigation }) {
     return regex.test(date);
   };
 
-  const renderItem = ({ item }) => {
-    return (
-      <Swipeable
-        renderRightActions={() => (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => deleteTask(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        )}
-      >
-        <View style={styles.taskContainer}>
-          <View style={styles.taskInfo}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.checkboxContainer}
-            onPress={() => toggleTaskCompletion(item.id, item.completed)}
-          >
-            {item.completed ? (
-              <Feather name="check-circle" size={24} color="green" />
-            ) : (
-              <Feather name="circle" size={24} color="black" />
-            )}
-          </TouchableOpacity>
-        </View>
-      </Swipeable>
-    );
+  const renderTaskItem = ({ item }) => (
+    <TaskItem 
+      item={item} 
+      toggleTaskCompletion={toggleTaskCompletion} 
+      deleteTask={deleteTask} 
+    />
+  );
+
+  const selectCategory = (category) => {
+    setSelectedCategory(category);
+    setCatVisibility(false);
   };
-  
+
+  const renderCatItem = ({ item }) => (
+    <CatItem 
+    cat={item} 
+    selectCategory={selectCategory} 
+    deleteCat={deleteCat} 
+    />
+  );
+
+
+
+  const addCat = async () => {
+    if (selectNewCat == "") {
+      alert('Please enter a category');
+      return;
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, "category"), {
+        email: loggedInUser?.email,
+        cat: selectNewCat
+      });
+      console.log("Document written with ID: ", docRef.id, selectNewCat);
+      setSelectedNewCat("");
+    } catch (error) {
+      console.error("Error adding category document in taskscreen: ", error);
+      alert('Failed to add a new category');
+    }
+
+    setAddCatVisibility(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -81,8 +107,8 @@ export default function TaskScreen({ navigation }) {
         <View style={styles.taskListContainer}>
           <Text style= {styles.header}>Tasks</Text>
           <FlatList
-            data={Object.keys(tasks).map(key => ({ date: key, data: tasks[key] })).flatMap(item => item.data)}
-            renderItem={renderItem}
+            data={tasks}
+            renderItem={renderTaskItem}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.taskList}
           />
@@ -111,14 +137,69 @@ export default function TaskScreen({ navigation }) {
               value={date}
               onChangeText={(date) => setDate(date)}
             />
+            <View style = {styles.row}>
+              <Text>Category</Text>
+              <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
+                <Text style={styles.buttonCatText}>{selectedCategory || "Select Category >"}</Text>
+              </TouchableOpacity>
+            </View>
 
             <TouchableOpacity onPress={handleAddTask} style={styles.button}>
               <Text style={styles.buttonText}>Add Task</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setPopVisibility(!popVisible)}
-            >
+
+            <TouchableOpacity style={styles.button} onPress={() => setPopVisibility(!popVisible)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType='slide'
+          visible={popCat}
+          onRequestClose={() => {
+            setPopVisibility(!popCat);
+          }}
+        >
+          <View style={styles.modalView}>
+            <FlatList
+              data = {cat}
+              renderItem={renderCatItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.taskList}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
+              <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType='slide'
+          visible={popAddCat}
+          onRequestClose={() => {
+            setAddCatVisibility(!popAddCat);
+          }}
+        >
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              placeholder="Category"
+              placeholderTextColor="#696969"
+              value={selectNewCat}
+              onChangeText={(selectNewCat) => setSelectedNewCat(selectNewCat)}
+            />
+
+            <TouchableOpacity onPress={addCat} style={styles.button}>
+              <Text style={styles.buttonText}>Add Category</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(!popAddCat)}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -129,6 +210,13 @@ export default function TaskScreen({ navigation }) {
           onPress={() => setPopVisibility(true)}
         >
           <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.addButtonGoal}
+          onPress={() => navigation.navigate('Goal')}
+        >
+          <Text style={styles.addButtonText}>G</Text>
         </TouchableOpacity>
       </ImageBackground>
     </SafeAreaView>
@@ -167,7 +255,17 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 14,
-    width: "80%",
+    width: "100%",
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonCat: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    margin: 14,
+    width: "60%",
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -178,15 +276,31 @@ const styles = StyleSheet.create({
     color: '#fffff0',
     textAlign: 'center',
   },
+  buttonCatText: {
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
+  },
   addButton: {
     backgroundColor: "#302298",
-    width: 60,
-    height: 60, 
+    width: 50,
+    height: 50, 
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    bottom: 30,
-    right: 30,
+    top: 15,
+    right: 25,
+    position: 'absolute',
+  },
+  addButtonGoal: {
+    backgroundColor: "#302298",
+    width: 50,
+    height: 50, 
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 15,
+    right: 90, 
     position: 'absolute',
   },
   addButtonText: {
@@ -213,60 +327,14 @@ const styles = StyleSheet.create({
   taskListContainer: {
     height: '100%',
     width: '100%',
+    paddingBottom:40
   },
   taskList: {
     padding: 20,
   },
-  taskContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f9f9f9",
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 10,
-    width: "100%",
-  },
-  taskInfo: {
-    flex: 1,
-    color: "#000000",
-  },
-  taskTitle: {
-    fontSize: 18,
-    flex: 1,
-    color: "#000000",
-  },
-  taskDeadline:{
-    fontSize: 14,
-    color: '#696969',
-    marginTop: 4,
-  },
-  checkboxContainer: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
-  },
-  itemText: {
-    color: 'black',
-    fontSize: 17,
-    marginLeft: 10,
-    flex: 1,
-  },
-  completedTask: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '75%',
-    marginTop: 10,
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    marginTop: 15,
   },
 });

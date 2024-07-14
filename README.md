@@ -12,13 +12,7 @@
 2. [System Architecture](#system-architecture)
 3. [Technology Stack](#technology-stack)
 4. [Setup and Installation](#setup-and-installation)
-5. [API Documentation](#api-documentation)
-6. [Database Design](#database-design)
-7. [Features and Functionality](#features-and-functionality)
-8. [Development Practices](#development-practices)
-9. [Deployment](#deployment)
-10. [Maintenance and Refactoring](#maintenance-and-refactoring)
-11. [Appendix](#appendix)
+5. [Appendix](#appendix)
 
 ---
 
@@ -66,8 +60,7 @@ The app aims to address common struggles among students, including:
 ## 2. System Architecture
 
 ### High-Level Architecture Diagram
-- Include a visual representation of the system architecture. Tools like Microsoft Visio, Lucidchart, or draw.io can be used for this.
-
+  
 ### Components Description
 
 #### User Interface (UI)
@@ -93,7 +86,7 @@ Core Features
 - **Task Organization and Checklist**
   - **Description**: Users can organize tasks into categories and create checklists for each task.
   - **Functionality**:
-    - Group tasks by categories (e.g., workout, study).
+    - Group tasks by categories (e.g., workout, study). [milestone 3]
     - Create and manage personalized checklists for each task.
   - **Technical Implementation**:
     - **Frontend**: Task and checklist creation UI, category filters.
@@ -108,15 +101,6 @@ Core Features
     - **Frontend**: Timer UI components, session tracking.
     - **Backend**: Store session data in Firestore, update session history.
 
-- **Reward System**
-  - **Description**: Users earn rewards (coins or gems) upon completing tasks.
-  - **Functionality**:
-    - Track user task completion.
-    - Award coins or gems as rewards.
-  - **Technical Implementation**:
-    - **Frontend**: Display rewards UI, update reward balance.
-    - **Backend**: Store rewards data in Firestore, update rewards based on task completion.
-
 - **Calendar Integration**
   - **Purpose**: Helps users manage their schedule by integrating tasks with their calendar.
   - **Functionality**: Users can add tasks to their calendar, view upcoming tasks, and receive reminders.
@@ -128,21 +112,21 @@ Core Features
   - **Interactions**: Retrieves and updates user profile data in Firebase Realtime Database / Firestore.
 
 Extension Features
+- **Reward System**
+  - **Description**: Users earn rewards (coins or gems) upon completing tasks.
+  - **Functionality**:
+    - Track user task completion.
+    - Award coins or gems as rewards.
+  - **Technical Implementation**:
+    - **Frontend**: Display rewards UI, update reward balance.
+    - **Backend**: Store rewards data in Firestore, update rewards based on task completion.
+   
 - **Goal Setting and Tracking with STAR Technique**
   - **Description**: This feature enables users to set and track goals using the SMART (Specific, Measurable, Achievable, Relevant, Time-bound) technique.
   - **Functionality**: Users can set daily, weekly, and semester-wise goals. The app provides progress tracking to ensure users stay on track with their goals.
   - **Technical Implementation**:
     - **Frontend**: Form inputs for goal setting, progress tracking UI components.
     - **Backend**: Store goals and progress data in Firestore, update progress based on user input.
-
-- **Spaced Repetition Tool**
-  - **Description**: Assists users in tracking study content to commit it to long-term memory.
-  - **Functionality**:
-    - Schedule study sessions for spaced repetition.
-    - Track study content and intervals.
-  - **Technical Implementation**:
-    - **Frontend**: Study session scheduling UI.
-    - **Backend**: Store study content and schedule in Firestore, update based on user input.
 
 - **Study Group and Pomodoro Technique**
   - **Description**: Allows users to form study groups for collaborative tasks and extra points, integrating the Pomodoro technique.
@@ -188,7 +172,7 @@ Extension Features
   - Provides a comprehensive and customizable navigation solution for the app.
 - **State Management**: React Context
   - Manages state and provides a way to share state across the app components.
-- **Styling**: CSS with StyleSheet
+- **Styling**: StyleSheet
   - For defining the styles and layout of the app components.
 
 #### Backend Development
@@ -212,6 +196,13 @@ Our app follows a client-server architecture, with the frontend developed using 
 ### Prerequisites
 Required software, hardware, and environment setup.
 
+### For Android Users Only 
+<img src="https://github.com/bhavinaa/The-Keepers/assets/142370200/2f18c9c5-72dd-440b-b8df-4179d3ec713a" width="300">
+
+For android users, you are able to scan this link and test out this app on your phone
+or you can click this link to be direced to the download
+https://expo.dev/accounts/thekeepers/projects/test02/builds/988fdff9-5c5b-46e0-bf84-e242d5ace36b
+
 ### IDE / Code Editor Setup
 1. Clone the repository.
 2. Install Node.js, if you haven't already.
@@ -230,84 +221,7 @@ If you encounter any errors while running the application, follow these troubles
 - Wipe data from the Android virtual debugger.
 
 ---
-
-## 5. API Documentation
-
-### API Overview
-General information about the APIs provided.
-
-### Endpoint Descriptions
-Detailed descriptions of each API endpoint, including request/response formats and authentication mechanisms (if applicable).
-
----
-
-## 6. Database Design
-
-### Schema Diagram
-Visual representation of the database schema.
-
-### COLLECTIONS and Documents
-Description of each table (collection) and its relationships.
-
-### Field Definitions
-Detailed information about each field in the database tables.
-
----
-
-## 7. Features and Functionality
-
-### User Stories/Use Cases
-Description of what the user can do with the system.
-
-### Functional Requirements
-List of functional requirements and how they are met.
-
-### UI/UX Design
-Screenshots and descriptions of the user interface.
-
----
-
-## 8. Development Practices
-
-### Coding Standards
-Guidelines for writing code (naming conventions, code structure).
-
-### Version Control
-Branching strategy, commit message conventions.
-
-### Testing
-Types of tests performed (unit, integration, end-to-end) and testing tools.
-
-### Continuous Integration/Continuous Deployment (CI/CD)
-Pipeline setup and tools used.
-
----
-
-## 9. Deployment
-
-### Deployment Process
-Steps to deploy the system to production.
-
-### Environments
-Description of different environments (development, staging, production).
-
----
-
-## 10. Maintenance and Refactoring
-
-### Issue Tracking
-Documentation on the problems of the code, ongoing problems.
-[19/6/24]
-* forget password is not authenticated
-* database collection is not linked to multiple accounts
-
-[21/6/24]
-* unable to delete individual tasks in the toDoList Feature 
-  
-
----
-
-## 11. Appendix
+## 5. Appendix
 
 ### References
 Links to external resources, libraries, and tools used.

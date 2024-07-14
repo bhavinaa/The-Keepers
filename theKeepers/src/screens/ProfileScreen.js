@@ -2,27 +2,69 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, ImageBackground, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
 import { signOut } from 'firebase/auth'; 
 import { authentication } from '../firebase/config'; 
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { profilepic } from '../assets/profilepic';
+
 export default function ProfileScreen({ navigation }) {
   const { loggedInUser, setLoggedInUser } = useAuth(); 
   const [username, setUsername] = useState('');
   const [image, setImage] = useState(null);
+  const ref = doc(db, "Profile", loggedInUser?.email);
+
+  useEffect(() => {
+    const unsubscribeImage = onSnapshot(doc(db, 'Profile', loggedInUser?.email), (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        setImage(userData?.url || profilepic);
+      } else {
+        setImage(profilepic);
+      }
+    }, (error) => {
+      console.error("Error fetching user document:", error);
+      setImage(profilepic);
+    });
+
+    const unsubscribeUsername = onSnapshot(doc(db, 'Users', loggedInUser?.email), (doc) => {
+      if (doc.exists()) {
+        const userData = doc.data();
+        setUsername(userData?.username || 'Stargazer');
+      } else {
+        setUsername('Stargazer');
+      }
+    }, (error) => {
+      console.error("Error fetching user document:", error);
+      setUsername('Stargazer');
+    });
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      unsubscribeImage();
+      unsubscribeUsername();
+    };
+  }, [loggedInUser]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 4],
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      try {
+        await setDoc(ref, {
+          url: result.assets[0].uri,
+        });
+        console.log("Document successfully written!");
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert('Failed to save user data');
+      }
     }
   };
 
@@ -36,31 +78,7 @@ export default function ProfileScreen({ navigation }) {
         console.error('Error signing out:', err);
       });
   };
-// it is unable to retirve the same image the next time...
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userDoc = await getDoc(doc(db, 'Users', loggedInUser.email));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUsername(userData.username);
-          if (userData.imageUrl) {
-            setImage(userData.imageUrl);
-          }
-        } else {
-          setUsername("");
-          console.log('No such document!');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    if (loggedInUser) {
-      fetchUserData();
-    }
-  }, [loggedInUser]);
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
@@ -72,11 +90,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={styles.overlay}>
           <View style={styles.profileContainer}>
             <TouchableOpacity onPress={pickImage} style={styles.profileIcon}>
-              {image ? (
                 <Image source={{ uri: image }} style={styles.profileImage} />
-              ) : (
-                <Text style={styles.initials}>{username.charAt(0).toUpperCase()}</Text>
-              )}
             </TouchableOpacity>
             <View style={styles.userInfoContainer}>
               <Text style={styles.username}>{username}</Text>
@@ -111,7 +125,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 20,
     width: '100%',
     justifyContent: 'flex-start',

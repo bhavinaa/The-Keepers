@@ -8,6 +8,7 @@ import AppStack from "./src/navigation/AppStack";
 import { TasksProvider } from './src/contexts/TasksContext';
 import { ToDoListProvider } from './src/contexts/ToDoListContext';
 import { CatProvider } from './src/contexts/CatContext';
+import { GoalProvider } from './src/contexts/GoalContext';
 
 const AppContent = () => {
   const { loggedInUser } = useAuth();
@@ -30,7 +31,9 @@ export default function App() {
             <TasksProvider>
               
               <CatProvider>
-                <AppContent />
+                <GoalProvider>
+                  <AppContent/>
+                </GoalProvider>
               </CatProvider>
 
             </TasksProvider>

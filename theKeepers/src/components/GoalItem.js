@@ -1,22 +1,41 @@
 import React, { PureComponent } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { updateDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/config';
 
 class GoalItem extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             popVisible: false,
+            reminders: props.goal.reminderDates, // assuming reminderDates is an array of objects with 'date' and 'checked' properties
         };
-    } // we need to manage state as such due to the render
+    }
 
     setPopVisibility = (visible) => {
         this.setState({ popVisible: visible });
     };
 
+    toggleReminder = async (reminder) => {
+        const updatedReminders = this.state.reminders.map(r => {
+            if (r.date === reminder.date) {
+                return { ...r, checked: !r.checked };
+            }
+            return r;
+        });
+
+        this.setState({ reminders: updatedReminders });
+
+        const goalDoc = doc(db, 'goal', this.props.goal.id);
+        await updateDoc(goalDoc, {
+            reminderDates: updatedReminders,
+        });
+    };
+
     render() {
         const { goal, deleteGoal } = this.props;
-        const { popVisible } = this.state;
+        const { popVisible, reminders } = this.state;
 
         return (
             <Swipeable
@@ -46,6 +65,13 @@ class GoalItem extends PureComponent {
                         <Text style={styles.categoryText}>{goal.des}</Text>
                         <Text style={styles.categoryText}>{goal.deadline}</Text>
                         <Text style={styles.categoryText}>{goal.reminder}</Text>
+                        {reminders.map((rem, index) => (
+                            <TouchableOpacity key={index} onPress={() => this.toggleReminder(rem)}>
+                                <Text style={styles.reminderText}>
+                                    {rem.date} - {rem.checked ? "Completed" : "Pending"}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
                         <TouchableOpacity
                             style={styles.closeButton}
                             onPress={() => this.setPopVisibility(false)}
@@ -83,7 +109,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: '#333333',
         padding: 35,
     },
     closeButton: {
@@ -96,6 +122,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    reminderText: {
+        color: 'white',
+        fontSize: 16,
+    }
 });
 
 export default GoalItem;
+

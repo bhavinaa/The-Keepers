@@ -7,44 +7,46 @@ const GoalContext = createContext();
 
 export const useGoal = () => useContext(GoalContext);
 
-export const GoalProvider = ({children}) => {
+export const GoalProvider = ({ children }) => {
     const [goal, setGoal] = useState([]);
     const [loading, setLoading] = useState(true);
-    const {loggedInUser} = useAuth();
+    const { loggedInUser } = useAuth();
 
     useEffect(() => {
         if (loggedInUser?.email) {
-          const q = query(collection(db, "goal"), where("email", "==", loggedInUser?.email));
-          const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const goalData = [];
-            querySnapshot.forEach((doc) => {
-              const data = doc.data();
-              goalData.push({
-                id: doc.id,
-                title: data.title || '',
-                des: data.description,
-                deadline: data.deadline, 
-                reminder: data.reminder
-              });
+            const q = query(collection(db, "goal"), where("email", "==", loggedInUser?.email));
+            const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const goalData = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    goalData.push({
+                        id: doc.id,
+                        title: data.title || '',
+                        des: data.description,
+                        deadline: data.deadline,
+                        reminder: data.reminder,
+                        reminderDates: data.reminderDates || [],
+                        reminderCount: data.reminderCount || 0 
+                    });
+                });
+                setGoal(goalData);
+                setLoading(false);
+            }, (error) => {
+                console.error("Error fetching goal: ", error);
             });
-            setGoal(goalData);
-            setLoading(false);
-          }, (error) => {
-            console.error("Error fetching goal: ", error);
-          });
-    
-          return () => unsubscribe();
-        }
-      }, [loggedInUser]);
 
-      const deleteGoal = async (goalID) => {
+            return () => unsubscribe();
+        }
+    }, [loggedInUser]);
+
+    const deleteGoal = async (goalID) => {
         const goalDoc = doc(db, "goal", goalID);
         await deleteDoc(goalDoc);
-      };
+    };
 
-      return (
+    return (
         <GoalContext.Provider value={{ goal, loading, deleteGoal }}>
-          {children}
+            {children}
         </GoalContext.Provider>
-      );
+    );
 }

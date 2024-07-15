@@ -18,13 +18,31 @@ export default function GoalScreen({ navigation }) {
     const { goal, deleteGoal } = useGoal();
     
     const handleAddGoal = async() => {
+        if (!validateDate(date)) {
+            alert('Please enter the date in yyyy-mm-dd format, and ensure it is after today');
+            return;
+        }
+        if(selectedReminder == ""){
+            alert("Please choose a reminder");
+            return;
+        }
+
+        const reminderDates = calculateReminderDates(date, selectedReminder);
+        const datesList = reminderDates.map(r => ({
+            date: r,
+            checked: false
+        }))
+        const reminderCount = reminderDates.length;
+
         try {
             const docRef = await addDoc(collection(db, 'goal'), {
                 email: loggedInUser?.email,
                 title: title,
                 description: description,
                 deadline: date,
-                reminder: selectedReminder
+                reminder: selectedReminder,
+                reminderDates: datesList,
+                reminderCount: reminderCount
             });
             console.log("Document written with ID: ", docRef.id);
             alert("Goal added successfully!");
@@ -50,6 +68,54 @@ export default function GoalScreen({ navigation }) {
         deleteGoal={deleteGoal} 
         />
     );
+
+    const validateDate = (date) => {
+        const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+        if (!regex.test(date)) {
+            return false;
+        }
+        const enteredDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return enteredDate > today;
+    };
+
+    const calculateReminderDates = (deadline, reminderFrequency) => {
+        const reminderDates = [];
+        const endDate = new Date(deadline);
+        let currentDate = new Date();
+    
+        switch (reminderFrequency) {
+            case 'Every Day':
+                while (currentDate <= endDate) {
+                    reminderDates.push(currentDate.toISOString().split('T')[0]);
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                break;
+            case 'Every Week':
+                while (currentDate <= endDate) {
+                    reminderDates.push(currentDate.toISOString().split('T')[0]);
+                    currentDate.setDate(currentDate.getDate() + 7);
+                }
+                break;
+            case 'Every Month':
+                while (currentDate <= endDate) {
+                    reminderDates.push(currentDate.toISOString().split('T')[0]);
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                }
+                break;
+            case 'Every Year':
+                while (currentDate <= endDate) {
+                    reminderDates.push(currentDate.toISOString().split('T')[0]);
+                    currentDate.setFullYear(currentDate.getFullYear() + 1);
+                }
+                break;
+            default:
+                break;
+        }
+        return reminderDates;
+    };
+
 
     return (
         <SafeAreaView style={styles.container}>

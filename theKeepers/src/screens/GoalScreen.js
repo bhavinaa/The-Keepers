@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
 import { addDoc, collection } from "firebase/firestore";
-import { Modal } from 'react-native-paper';
+import { Modal } from 'react-native-paper'; // prefer this as importing from React Native covers the whole screen
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
+import { useGoal } from '../contexts/GoalContext';
+import GoalItem from '../components/GoalItem';
 
 export default function GoalScreen({ navigation }) {
     const [popVisible, setPopVisibility] = React.useState(false);
@@ -13,6 +15,7 @@ export default function GoalScreen({ navigation }) {
     const [date, setDate] = React.useState("");
     const [reVisible, setReVisibilitty] = React.useState(false);
     const { loggedInUser } = useAuth();
+    const { goal, deleteGoal } = useGoal();
     
     const handleAddGoal = async() => {
         try {
@@ -41,9 +44,25 @@ export default function GoalScreen({ navigation }) {
         setReVisibilitty(false);
     };
 
+    const renderGoalItem = ({ item }) => (
+        <GoalItem 
+        goal={item} 
+        deleteGoal={deleteGoal} 
+        />
+    );
+
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground source={require('../assets/the_background.png')} resizeMode='cover' style={styles.image}>
+            <View style={styles.goalListContainer}>
+                <Text style= {styles.header}>Goal</Text>
+                <FlatList
+                    data={goal}
+                    renderItem={renderGoalItem}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.goalList}
+                />
+            </View>
                 <Modal
                     animationType='slide'
                     visible={popVisible}
@@ -125,6 +144,10 @@ export default function GoalScreen({ navigation }) {
                 <TouchableOpacity onPress={() => setPopVisibility(true)} style={styles.addButton}>
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate("Task")} style={styles.backButton}>
+                    <Text style={styles.buttonText}>back</Text>
+                </TouchableOpacity>
             </ImageBackground>
         </SafeAreaView>
     );
@@ -133,10 +156,27 @@ export default function GoalScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignContent:"flex-start"
     },
     image: {
         flex: 1,
         justifyContent: 'center',
+    },
+    goalListContainer: {
+        height: '100%',
+        width: '100%',
+        paddingBottom:40
+    },
+    header:{
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        textAlign: 'center',
+        textAlignVertical:"top",
+        marginTop: 40,
+    },
+    goalList: {
+        padding: 20,
     },
     modalView: {
         margin: 20,
@@ -206,8 +246,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
-        bottom: 30,
+        top: 30,
         right: 30,
+    },
+    backButton: {
+        backgroundColor: "#302298",
+        width: 70,
+        height: 50,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 30,
+        left: 20,
     },
     title: {
         color: "white", 

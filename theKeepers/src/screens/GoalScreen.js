@@ -23,8 +23,7 @@ export default function GoalScreen({ navigation }) {
             return;
         }
         if(selectedReminder == ""){
-            alert("Please choose a reminder");
-            return;
+            setSelectedReminder("Never");
         }
 
         const reminderDates = calculateReminderDates(date, selectedReminder);
@@ -146,7 +145,7 @@ export default function GoalScreen({ navigation }) {
                         />
 
                         <TextInput
-                            style={styles.buttonDes}
+                            style={styles.input}
                             placeholder="Description"
                             placeholderTextColor="#696969"
                             value={description}
@@ -164,7 +163,7 @@ export default function GoalScreen({ navigation }) {
                         <View style={styles.row}>
                             <Text style={styles.rem}>Reminder</Text>
                             <TouchableOpacity onPress={() => setReVisibilitty(true)} style={styles.buttonCat}>
-                                <Text style={styles.buttonText}>{selectedReminder || "Never >"}</Text>
+                                <Text style={styles.selectRem}>{selectedReminder || "Never >"}</Text>
                             </TouchableOpacity>
                         </View>
                         
@@ -260,18 +259,19 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     input: {
-        height: 40,
+        height: "auto",
         margin: 12,
         borderWidth: 1,
         padding: 10,
         borderRadius: 10, 
         borderColor: "white",
         width: "100%",
+        color: "white"
     },
     row: {
         flexDirection: 'row',
-        alignItems: 'center',
-        margin: 15,
+        justifyContent: 'space-between',
+        width: '100%'
     },
     button: {
         backgroundColor: "#302298",
@@ -283,16 +283,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    buttonDes:{
-        height: 100,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 10, 
-        borderColor: "white",
-        width: "100%",
-        textAlignVertical: 'top',
-    }, 
     buttonText: {
         fontSize: 20,
         fontWeight: "bold",
@@ -300,9 +290,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     buttonCat: {
-        marginLeft: 10,
-        padding: 10,
-        borderRadius: 10,
+        borderWidth: 1,
+        borderRadius: 10, 
+        borderColor: "white", 
+        width: "auto"
+    },
+    selectRem: {
+        color: "white", 
+        fontSize: 20,
+        paddingBottom: 5, 
+        paddingTop:5,
+        paddingLeft: 10, 
+        paddingRight: 10
     },
     addButton: {
         backgroundColor: "#302298",
@@ -319,7 +318,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#302298",
         width: 70,
         height: 50,
-        borderRadius: 5,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
@@ -335,5 +334,7 @@ const styles = StyleSheet.create({
         color: "white", 
         fontSize: 20,
         fontWeight: "bold",
+        paddingBottom: 5, 
+        paddingTop:5,
     }
 });

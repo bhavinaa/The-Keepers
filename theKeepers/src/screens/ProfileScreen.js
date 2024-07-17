@@ -12,6 +12,7 @@ export default function ProfileScreen({ navigation }) {
   const { loggedInUser, setLoggedInUser } = useAuth(); 
   const [username, setUsername] = useState('');
   const [image, setImage] = useState(null);
+  const [points, setPoints] = useState(0);
   const ref = doc(db, "Profile", loggedInUser?.email);
 
   useEffect(() => {
@@ -39,10 +40,17 @@ export default function ProfileScreen({ navigation }) {
       setUsername('Stargazer');
     });
 
+    const updatePoints = onSnapshot(doc(db, "rewards", loggedInUser?.email), (doc) => {
+      if(doc.exists()){
+        const data = doc.data();
+        setPoints(data.points);
+      }
+    })
     // Cleanup subscriptions on unmount
     return () => {
       unsubscribeImage();
       unsubscribeUsername();
+      updatePoints();
     };
   }, [loggedInUser]);
 
@@ -97,6 +105,7 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.email}>{loggedInUser ? loggedInUser.email : ''}</Text>
             </View>
           </View>
+          <Text style= {styles.email}>{points}</Text>
         </View>
       </ImageBackground>
       <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} style={styles.editButton}>

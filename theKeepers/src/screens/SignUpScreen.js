@@ -22,6 +22,9 @@ export default function SignUpScreen({ navigation }) {
           await setDoc(doc(ref, email), {
             username: name,
           });
+          await setDoc(doc(collection(db, "rewards"), email), {
+            points: 0,
+          });
           console.log("Document successfully written!");
         } catch (error) {
           console.error("Error adding document: ", error);

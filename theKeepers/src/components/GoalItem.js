@@ -10,7 +10,6 @@ class GoalItem extends PureComponent {
         super(props);
         this.state = {
             popVisible: false,
-            reminders: props.goal.reminderDates,
         };
     }
 
@@ -18,25 +17,14 @@ class GoalItem extends PureComponent {
         this.setState({ popVisible: visible });
     };
 
-    toggleReminder = async (reminder) => {
-        const updatedReminders = this.state.reminders.map(r => {
-            if (r.date === reminder.date) {
-                return { ...r, checked: !r.checked };
-            }
-            return r;
-        });
-
-        this.setState({ reminders: updatedReminders });
-
-        const goalDoc = doc(db, 'goal', this.props.goal.id);
-        await updateDoc(goalDoc, {
-            reminderDates: updatedReminders,
-        });
+    toggleReminder = (reminder) => {
+        const { toggleReminder } = this.context;
+        toggleReminder(this.props.goal.id, reminder);
     };
 
     render() {
         const { goal, deleteGoal } = this.props;
-        const { popVisible, reminders } = this.state;
+        const { popVisible } = this.state;
 
 
         return (
@@ -70,7 +58,7 @@ class GoalItem extends PureComponent {
                             <Text style={styles.modalContent}>Deadline: {goal.deadline}</Text>
                             <Text style={styles.modalContent}>Reminder: {goal.reminder}</Text>
                             <View style={styles.reminderContainer}>
-                            {reminders.map((rem, index) => {
+                            {goal.reminders.map((rem, index) => {
                                 const formattedDate = new Date(rem.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
                                 return (
                                     <View key={index} style={styles.reminderItem}>

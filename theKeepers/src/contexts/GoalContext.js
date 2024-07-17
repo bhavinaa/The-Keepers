@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, orderBy } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
@@ -46,7 +46,7 @@ export const GoalProvider = ({ children }) => {
 
     const toggleReminder = async (goalID, reminder) => {
         const goalDoc = doc(db, 'goal', goalID);
-        const goalSnap = await goalDoc.get();
+        const goalSnap = await getDoc(goalDoc);
         if (goalSnap.exists()) {
             const goalData = goalSnap.data();
             const updatedReminders = goalData.reminderDates.map(r => {

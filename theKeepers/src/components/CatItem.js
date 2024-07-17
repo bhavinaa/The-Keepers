@@ -29,22 +29,34 @@ class CatItem extends PureComponent {
 
 const styles = StyleSheet.create({
     catContainer: {
-      padding: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
+      backgroundColor: "#302298",
+      borderRadius: 20,
+      padding: 10,
+      margin: 14,
+      width: 265,
+      height: 50,
+      alignItems: "center",
+      justifyContent: "center",
     },
     categoryText: {
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: "bold",
+      color: '#fffff0',
+      textAlign: 'center',
     },
     deleteButton: {
-      backgroundColor: 'red',
+      backgroundColor: '#b22222',
       justifyContent: 'center',
       alignItems: 'center',
-      width: 70,
+      width: 265,
+      height: '75%',
+      marginTop: 10,
+      borderRadius: 10,
     },
     deleteButtonText: {
       color: 'white',
       fontWeight: 'bold',
+      padding: 20,
     },
   });
   

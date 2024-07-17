@@ -3,13 +3,14 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/config';
+import Feather from 'react-native-vector-icons/Feather';
 
 class GoalItem extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             popVisible: false,
-            reminders: props.goal.reminderDates, // assuming reminderDates is an array of objects with 'date' and 'checked' properties
+            reminders: props.goal.reminderDates,
         };
     }
 
@@ -37,6 +38,7 @@ class GoalItem extends PureComponent {
         const { goal, deleteGoal } = this.props;
         const { popVisible, reminders } = this.state;
 
+
         return (
             <Swipeable
                 renderRightActions={() => (
@@ -49,8 +51,8 @@ class GoalItem extends PureComponent {
                 )}
             >
                 <TouchableOpacity onPress={() => this.setPopVisibility(true)}>
-                    <View style={styles.catContainer}>
-                        <Text style={styles.categoryText}>{goal.title}</Text>
+                    <View style={styles.goalContainer}>
+                        <Text style={styles.goalText}>{goal.title}</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -60,24 +62,37 @@ class GoalItem extends PureComponent {
                     visible={popVisible}
                     onRequestClose={() => this.setPopVisibility(false)}
                 >
-                    <View style={styles.modalView}>
-                        <Text style={styles.categoryText}>{goal.title}</Text>
-                        <Text style={styles.categoryText}>{goal.des}</Text>
-                        <Text style={styles.categoryText}>{goal.deadline}</Text>
-                        <Text style={styles.categoryText}>{goal.reminder}</Text>
-                        {reminders.map((rem, index) => (
-                            <TouchableOpacity key={index} onPress={() => this.toggleReminder(rem)}>
-                                <Text style={styles.reminderText}>
-                                    {rem.date} - {rem.checked ? "Completed" : "Pending"}
-                                </Text>
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalTitle}>{goal.title}</Text>
+                            <Text style={styles.modalContent}>Description:</Text>
+                            <Text style={styles.modalContent}>{goal.des}</Text>
+                            <Text style={styles.modalContent}>Deadline: {goal.deadline}</Text>
+                            <Text style={styles.modalContent}>Reminder: {goal.reminder}</Text>
+                            <View style={styles.reminderContainer}>
+                            {reminders.map((rem, index) => {
+                                const formattedDate = new Date(rem.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                                return (
+                                    <View key={index} style={styles.reminderItem}>
+                                        <TouchableOpacity onPress={() => this.toggleReminder(rem)}>
+                                            {rem.checked ? (
+                                                <Feather name="check-circle" size={24} color="#228b22" />
+                                                ) : (
+                                                <Feather name="circle" size={24} color="white" />
+                                            )}
+                                        </TouchableOpacity>
+                                        <Text style={styles.reminderText}>{formattedDate}</Text>
+                                    </View>
+                                );
+                            })}
+                            </View>
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => this.setPopVisibility(false)}
+                            >
+                                <Text style={styles.closeButtonText}>Close</Text>
                             </TouchableOpacity>
-                        ))}
-                        <TouchableOpacity
-                            style={styles.closeButton}
-                            onPress={() => this.setPopVisibility(false)}
-                        >
-                            <Text style={styles.categoryText}>Close</Text>
-                        </TouchableOpacity>
+                        </View>
                     </View>
                 </Modal>
             </Swipeable>
@@ -86,31 +101,75 @@ class GoalItem extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-    catContainer: {
-        padding: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+    goalContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        padding: 15,
+        marginVertical: 8,
+        borderRadius: 10,
+        width: "100%",
+        height: 60
     },
-    categoryText: {
-        color: 'white',
+    goalText: {
         fontSize: 18,
+        flex: 1,
+        color: "#000000",
     },
     deleteButton: {
-        backgroundColor: 'red',
+        backgroundColor: '#302298',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 70,
+        width: '100%',
+        height: '75%',
+        marginTop: 10,
+        borderRadius: 10,
     },
     deleteButtonText: {
         color: 'white',
         fontWeight: 'bold',
+        padding: 20,
     },
-    modalView: {
+    modalOverlay: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#333333',
-        padding: 35,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        width: '90%',
+        backgroundColor: '#444',
+        borderRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+        borderColor: '#FFF',
+        borderWidth: 1,
+    },
+    modalTitle: {
+        fontSize: 22,
+        marginBottom: 15,
+        color: '#FFF',
+        fontWeight: 'bold',
+    },
+    modalContent: {
+        fontSize: 18,
+        color: '#FFF',
+        marginBottom: 10,
+    },
+    reminderContainer: {
+        width: '100%',
+        marginTop: 20,
+    },
+    reminderItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    reminderText: {
+        color: '#FFF',
+        fontSize: 16,
+        marginLeft: 10,
     },
     closeButton: {
         backgroundColor: "#302298",
@@ -122,11 +181,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    reminderText: {
+    closeButtonText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 18,
+        fontWeight: 'bold',
     }
 });
 
 export default GoalItem;
-

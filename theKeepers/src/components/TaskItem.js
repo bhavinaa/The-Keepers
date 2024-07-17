@@ -6,6 +6,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 class TaskItem extends PureComponent {
   render() {
     const { item, toggleTaskCompletion, deleteTask } = this.props;
+    const formattedDeadline = new Date(item.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
        return (
       <Swipeable
         renderRightActions={() => (
@@ -24,7 +25,7 @@ class TaskItem extends PureComponent {
             </Text>
 
             <View style={styles.row}>
-              <Text style={styles.taskDeadline}>{item.deadline.toISOString().split('T')[0]}</Text>
+              <Text style={styles.taskDeadline}>{formattedDeadline}</Text>
               <Text style={styles.taskDeadline}>{item.category}</Text>
             </View>
 

@@ -8,7 +8,6 @@ import { useCat} from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
 import TaskItem from '../components/TaskItem';
 import CatItem from '../components/CatItem';
-import GoalScreen from '../screens/GoalScreen';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
@@ -46,10 +45,6 @@ export default function TaskScreen({ navigation }) {
     }
 
     setPopVisibility(false);
-  };
-
-  const handleAddCategory = () => {
-    setCatVisibility(false);
   };
 
   const validateDate = (date) => {
@@ -138,9 +133,9 @@ export default function TaskScreen({ navigation }) {
               onChangeText={(date) => setDate(date)}
             />
             <View style = {styles.row}>
-              <Text>Category</Text>
+              <Text style={styles.catText}> Category</Text>
               <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
-                <Text style={styles.buttonCatText}>{selectedCategory || "Select Category >"}</Text>
+                <Text style={styles.buttonCatText}>{selectedCategory || "None >"}</Text>
               </TouchableOpacity>
             </View>
 
@@ -166,7 +161,7 @@ export default function TaskScreen({ navigation }) {
               data = {cat}
               renderItem={renderCatItem}
               keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.taskList}
+              contentContainerStyle={styles.catList}
             />
 
             <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
@@ -239,16 +234,14 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   input: {
-    width: "80%",
     height: 40,
-    borderColor: "gray",
-    marginTop: 15,
+    margin: 12,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 8,
-    paddingRight: 8,
-    color: "#000000",
-    borderRadius: 15,
+    padding: 10,
+    borderRadius: 10, 
+    borderColor: "white",
+    width: "100%",
+    color: "white"
   },
   button: {
     backgroundColor: "#302298",
@@ -261,14 +254,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonCat: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 10,
-    margin: 14,
-    width: "60%",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    borderWidth: 1,
+    borderRadius: 10, 
+    borderColor: "white", 
+    width: "auto"
   },
   buttonText: {
     fontSize: 20,
@@ -277,9 +266,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonCatText: {
-    fontSize: 16,
-    color: 'black',
-    textAlign: 'center',
+    color: "white", 
+    fontSize: 20,
+    paddingBottom: 5, 
+    paddingTop:5,
+    paddingLeft: 10, 
+    paddingRight: 10
   },
   addButton: {
     backgroundColor: "#302298",
@@ -311,18 +303,18 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#333333",
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
-      width: 0,
-      height: 2
+        width: 0,
+        height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 5
   },
   taskListContainer: {
     height: '100%',
@@ -334,7 +326,19 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 15,
+    justifyContent: 'space-between',
+    width: '100%'
   },
+  catText: {
+    color: "white", 
+    fontSize: 20,
+    fontWeight: "bold",
+    paddingBottom: 5, 
+    paddingTop:5,
+  }, 
+  catList: {
+    height: 'auto',
+    width: 'auto',
+    paddingBottom:20
+  }
 });

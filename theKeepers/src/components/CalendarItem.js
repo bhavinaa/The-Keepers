@@ -8,9 +8,6 @@ const CalendarItem = ({ item }) => {
                 <Text style={item.completion? styles.taskTitle: styles.completedTask}>
                     {item.title}
                 </Text>
-                {item.deadline && (
-                    <Text style={styles.taskDeadline}>{new Date(item.deadline).toISOString().split('T')[0]}</Text>
-                )}
             </View>
         </View>
     );
@@ -21,11 +18,12 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: '#87ceeb',
         padding: 15,
         marginVertical: 8,
         borderRadius: 10,
         width: "100%",
+        height: 70
     },
     taskInfo: {
         flex: 1,
@@ -34,14 +32,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         flex: 1,
     },
-    taskDeadline: {
-        fontSize: 14,
-        color: '#696969',
-        marginTop: 4,
-    },
     completedTask: {
         textDecorationLine: 'line-through',
-        color: '#87ceeb',
+        fontSize: 18,
+        color: '#696969',
     },
 });
 

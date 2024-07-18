@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -7,9 +7,10 @@ import {
   Text,
   Alert,
   ImageBackground,
+  TextInput,
 } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-// import Sound from 'react-native-sound';
+import {getFocusTip} from "../firebase/openAI"
 
 const Separator = () => <View style={styles.separator} />;
 
@@ -22,7 +23,7 @@ const CustomButton = ({ onPress, title, color }) => (
   </TouchableOpacity>
 );
 
-const renderTime = ({ remainingTime }) => {
+const renderTime = ({ remainingTime, focusTip }) => {
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
 
@@ -35,21 +36,31 @@ const renderTime = ({ remainingTime }) => {
       <Text style={styles.value}>
         {`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}
       </Text>
+      <Text style={styles.focusTip}>{focusTip}</Text>
     </View>
   );
 };
 
 export default function App() {
-  const [isPlaying, setIsPlaying] = React.useState(true);
-  const [duration, setDuration] = React.useState(60);
-  const [key, setKey] = React.useState(0);
-  const [noOfPMTimes, setNoOfPMTimes] = React.useState(0);
-  const [customTime, setCustomTime] = React.useState('');
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [duration, setDuration] = useState(60);
+  const [key, setKey] = useState(0);
+  const [focusTip, setFocusTip] = useState('');
+  const [customTime, setCustomTime] = useState('');
+
+  useEffect(() => {
+    const fetchFocusTip = async () => {
+      const tip = await getFocusTip();
+      setFocusTip(tip);
+    };
+
+    fetchFocusTip();
+  }, [key]);
 
   const startPMTimer = () => {
     Alert.alert('Starting Pomodoro timer');
     setKey(prevKey => prevKey + 1);
-    setDuration(1500);
+    setDuration(customTime ? parseInt(customTime) * 60 : 1500);
     setIsPlaying(true);
   };
 
@@ -71,7 +82,6 @@ export default function App() {
     Alert.alert('Stopping Timer');
     setIsPlaying(false);
   };
-  
 
   return (
     <View style={styles.container}>
@@ -91,41 +101,61 @@ export default function App() {
               duration={duration}
               strokeWidth={12}
               colors={["#778DA9", '#E0E1DD', '#24243E']}
-              //colors={['#0F0C29', '#302B63', '#24243E']}
               updateInterval={1}
               onComplete={() => {
                 Alert.alert('Timer Finished');
-                // TO DO: Increase the respective timer status in the Firebase database
               }}
             >
-              {renderTime}
+              {({ remainingTime }) => renderTime({ remainingTime})}
             </CountdownCircleTimer>
+
+            <Separator />
+            <Separator />
+            <Text style={styles.focusTip}>{focusTip}</Text>
+            
+          </View>
+
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter custom time (min)"
+              keyboardType="numeric"
+              value={customTime}
+              onChangeText={text => setCustomTime(text)}
+            />
+            <Separator />
+
+
           </View>
           <View style={styles.buttonContainer}>
-            <CustomButton
-              title="Pomodoro (25 min)"
-              color="#FF9F1C"
-              onPress={startPMTimer}
-            />
-            <Separator />
-            <CustomButton
-              title="Short Break (5 min)"
-              color="#3B9AE1"
-              //color="#AFEEEE"
-              onPress={startSBTimer}
-            />
-            <Separator />
-            <CustomButton
-              title="Long Break (15 min)"
-              color = "#A8DADC"
-              onPress={startLBTimer}
-            />
-            <Separator />
+            <View style={styles.row}>
+              <CustomButton
+                title="Start Timer"
+                color="#FF9F1C"
+                onPress={startPMTimer}
+              />
+              <Separator />
+
+
+              <CustomButton
+                title="Short Break"
+                color="#3B9AE1"
+                onPress={startSBTimer}
+              />
+              <Separator />
+              <CustomButton
+                title="Long Break"
+                color="#A8DADC"
+                onPress={startLBTimer}
+              />
+              <Separator />
+            </View>
             <CustomButton
               title="Stop"
-              color = "#FFD166"
-              //color="#FFE4E1"
+              color="#FFD166"
               onPress={stopPMTimer}
+              style={styles.stopButton}
             />
           </View>
         </SafeAreaView>
@@ -144,6 +174,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    marginTop: 60, // Adjust this value to move the header down
     marginBottom: 10,
   },
   title: {
@@ -161,15 +192,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
     paddingHorizontal: 24,
-    borderRadius: 20,
+    borderRadius: 10,
     elevation: 3,
-    width: '70%',
+    width: 100,
     marginVertical: 10,
+    marginHorizontal: 5,
+  },
+  stopButton: {
+    alignSelf: 'flex-end',
   },
   buttonText: {
     fontSize: 16,
@@ -184,7 +224,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  focusTip: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 10,
+  },
   separator: {
     height: 10,
+    width: 10,
+  },
+  inputContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    width: '70%',
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+  },
+  focusTip: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 10,
   },
 });

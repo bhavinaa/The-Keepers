@@ -3,6 +3,7 @@ import { authentication } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "../contexts/AuthContext";
 import {the_background} from "../assets/the_background.png";
+import {getFocusTip} from "../firebase/openAI"
 
 import {
   View,

@@ -15,7 +15,7 @@ export default function GoalScreen({ navigation }) {
     const [date, setDate] = React.useState("");
     const [reVisible, setReVisibilitty] = React.useState(false);
     const { loggedInUser } = useAuth();
-    const { goal, deleteGoal } = useGoal();
+    const { goal, deleteGoal, toggleReminder } = useGoal();
     
     const handleAddGoal = async() => {
         if (!validateDate(date)) {
@@ -65,6 +65,7 @@ export default function GoalScreen({ navigation }) {
         <GoalItem 
         goal={item} 
         deleteGoal={deleteGoal} 
+        toggleReminder={toggleReminder}
         />
     );
 

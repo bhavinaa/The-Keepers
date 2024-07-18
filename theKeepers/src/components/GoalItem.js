@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase/config';
 import Feather from 'react-native-vector-icons/Feather';
 
 class GoalItem extends PureComponent {
@@ -10,7 +8,6 @@ class GoalItem extends PureComponent {
         super(props);
         this.state = {
             popVisible: false,
-            reminders: props.goal.reminderDates,
         };
     }
 
@@ -18,25 +15,9 @@ class GoalItem extends PureComponent {
         this.setState({ popVisible: visible });
     };
 
-    toggleReminder = async (reminder) => {
-        const updatedReminders = this.state.reminders.map(r => {
-            if (r.date === reminder.date) {
-                return { ...r, checked: !r.checked };
-            }
-            return r;
-        });
-
-        this.setState({ reminders: updatedReminders });
-
-        const goalDoc = doc(db, 'goal', this.props.goal.id);
-        await updateDoc(goalDoc, {
-            reminderDates: updatedReminders,
-        });
-    };
-
     render() {
-        const { goal, deleteGoal } = this.props;
-        const { popVisible, reminders } = this.state;
+        const { goal, deleteGoal, toggleReminder } = this.props;
+        const { popVisible } = this.state;
 
 
         return (
@@ -70,11 +51,11 @@ class GoalItem extends PureComponent {
                             <Text style={styles.modalContent}>Deadline: {goal.deadline}</Text>
                             <Text style={styles.modalContent}>Reminder: {goal.reminder}</Text>
                             <View style={styles.reminderContainer}>
-                            {reminders.map((rem, index) => {
+                            {goal.reminderDates.map((rem, index) => {
                                 const formattedDate = new Date(rem.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
                                 return (
                                     <View key={index} style={styles.reminderItem}>
-                                        <TouchableOpacity onPress={() => this.toggleReminder(rem)}>
+                                        <TouchableOpacity onPress={() => toggleReminder(goal.id, rem)}>
                                             {rem.checked ? (
                                                 <Feather name="check-circle" size={24} color="#228b22" />
                                                 ) : (

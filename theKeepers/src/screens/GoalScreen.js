@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { Modal } from 'react-native-paper'; // prefer this as importing from React Native covers the whole screen
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
@@ -17,44 +17,61 @@ export default function GoalScreen({ navigation }) {
     const { loggedInUser } = useAuth();
     const { goal, deleteGoal, toggleReminder } = useGoal();
     
-    const handleAddGoal = async() => {
+    const handleAddGoal = async () => {
         if (!validateDate(date)) {
             alert('Please enter the date in yyyy-mm-dd format, and ensure it is after today');
             return;
         }
-        if(selectedReminder == ""){
+        if (selectedReminder === "") {
             setSelectedReminder("Never");
         }
-
+    
         const reminderDates = calculateReminderDates(date, selectedReminder);
         const datesList = reminderDates.map(r => ({
             date: r,
             checked: false
-        }))
+        }));
         const reminderCount = reminderDates.length;
-
+    
         try {
-            const docRef = await addDoc(collection(db, 'goal'), {
+            const goalDocRef = await addDoc(collection(db, 'goal'), {
                 email: loggedInUser?.email,
                 title: title,
                 description: description,
-                deadline: date,
+                deadline: Timestamp.fromDate(new Date(date)),
                 reminder: selectedReminder,
                 reminderDates: datesList,
-                reminderCount: reminderCount
+                reminderCount: reminderCount,
             });
-            console.log("Document written with ID: ", docRef.id);
+            setPopVisibility(false);
+    
             alert("Goal added successfully!");
-        } catch(error) {
-            console.error("Error", error);
+    
+            console.log("Goal document written with ID: ", goalDocRef.id);
+    
+            for (const reminderDate of reminderDates) {
+                await addDoc(collection(db, "calendar"), {
+                    email: loggedInUser?.email,
+                    title: title,
+                    type: "Reminder",
+                    goalId: goalDocRef.id,
+                    reminderDate: Timestamp.fromDate(new Date(reminderDate)),
+                    deadline: Timestamp.fromDate(new Date(date)),
+                });
+                console.log("added goal in calendar")
+            }
+            setTitle("");
+            setDescription("");
+            setSelectedReminder("");
+            setDate("");
+    
+        } catch (error) {
+            console.error("Error adding goal: ", error);
             alert("Failed to add goal");
         }
-        setTitle("");
-        setDescription("");
-        setSelectedReminder("");
-        setDate("");
-        setPopVisibility(false);
     };
+    
+    
 
     const handleAddReminder = async(re) => {
         setSelectedReminder(re);

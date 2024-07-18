@@ -35,6 +35,13 @@ export default function TaskScreen({ navigation }) {
         deadline: Timestamp.fromDate(new Date(date)),
         category: selectedCategory
       });
+      const calDocRef = await addDoc(collection(db, "calendar"), {
+        email: loggedInUser?.email,
+        title: task,
+        type: "Task",
+        taskId: docRef, 
+        deadline: Timestamp.fromDate(new Date(date)),
+      });
       console.log("Document written with ID: ", docRef.id, selectedCategory);
       setTask("");
       setDate("");

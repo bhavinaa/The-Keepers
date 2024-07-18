@@ -9,6 +9,7 @@ import { TasksProvider } from './src/contexts/TasksContext';
 import { ToDoListProvider } from './src/contexts/ToDoListContext';
 import { CatProvider } from './src/contexts/CatContext';
 import { GoalProvider } from './src/contexts/GoalContext';
+import { CalendarProvider } from './src/contexts/CalendarContext';
 
 const AppContent = () => {
   const { loggedInUser } = useAuth();
@@ -25,20 +26,18 @@ export default function App() {
       <ImageBackground source={require('./src/assets/the_background.png')} resizeMode="cover" style={styles.image}>
         
         <AuthProvider>
-
-          <ToDoListProvider>
-
             <TasksProvider>
               
               <CatProvider>
                 <GoalProvider>
-                  <AppContent/>
+                  <CalendarProvider>
+                    <AppContent/>
+                  </CalendarProvider>
+                  
                 </GoalProvider>
               </CatProvider>
 
             </TasksProvider>
-
-          </ToDoListProvider>
 
         </AuthProvider>
 

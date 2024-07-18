@@ -74,8 +74,23 @@ export const GoalProvider = ({ children }) => {
         }
     };
 
+    const getCompletion = async (goalID, reminderDate) => {
+        const goalDoc = doc(db, "goal", goalID);
+        const goalSnap = await getDoc(goalDoc);
+        let check = false;
+        if (goalSnap.exists()) {
+            const goalData = goalSnap.data();
+            goalData.reminderDates.forEach(r => {
+                if (r.date === reminderDate) {
+                    check = r.checked;
+                }
+            });
+        }
+        return check;
+    };
+
     return (
-        <GoalContext.Provider value={{ goal, loading, deleteGoal, toggleReminder }}>
+        <GoalContext.Provider value={{ goal, loading, deleteGoal, toggleReminder, getCompletion }}>
             {children}
         </GoalContext.Provider>
     );

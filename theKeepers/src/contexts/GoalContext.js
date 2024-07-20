@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, getDoc, increment } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, getDoc, increment, getDocs } from "firebase/firestore";
 import { db } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
@@ -42,6 +42,13 @@ export const GoalProvider = ({ children }) => {
     const deleteGoal = async (goalID) => {
         const goalDoc = doc(db, "goal", goalID);
         await deleteDoc(goalDoc);
+    
+        const q = query(collection(db, 'calendar'), where("goalId", "==", goalID));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        });
     };
 
     const toggleReminder = async (goalID, reminder) => {
@@ -59,7 +66,19 @@ export const GoalProvider = ({ children }) => {
                 }
                 return r;
             });
-            
+
+            await updateDoc(goalDoc, {
+                reminderDates: updatedReminders,
+            });
+
+            const q = query(collection(db, "calendar"), where("goalId", "==", goalDoc), where("deadline", "==", reminder));
+            const goalSnap = await getDoc(goalDoc);
+            querySnapshot.forEach(async (doc) => {
+                await updateDoc(doc, {
+                    completion: check,
+            });
+            });
+
             if(rewardSnap.exists()){
                 let pointsChange = check ? 200 : -200;
 
@@ -67,10 +86,6 @@ export const GoalProvider = ({ children }) => {
                     points: increment(pointsChange)
                 })
             }
-
-            await updateDoc(goalDoc, {
-                reminderDates: updatedReminders,
-            });
         }
     };
 

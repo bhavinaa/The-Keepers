@@ -5,7 +5,7 @@ const CalendarItem = ({ item }) => {
     return (
         <View style={styles.taskContainer}>
             <View style={styles.taskInfo}>
-                <Text style={item.completion? styles.taskTitle: styles.completedTask}>
+                <Text style={item.completion? styles.completedTask: styles.taskTitle}>
                     {item.title}
                 </Text>
             </View>

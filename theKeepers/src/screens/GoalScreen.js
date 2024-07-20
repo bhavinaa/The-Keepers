@@ -44,7 +44,6 @@ export default function GoalScreen({ navigation }) {
                 reminderCount: reminderCount,
             });
             setPopVisibility(false);
-    
             alert("Goal added successfully!");
     
             console.log("Goal document written with ID: ", goalDocRef.id);
@@ -57,6 +56,7 @@ export default function GoalScreen({ navigation }) {
                     goalId: goalDocRef.id,
                     reminderDate: Timestamp.fromDate(new Date(reminderDate)),
                     deadline: Timestamp.fromDate(new Date(date)),
+                    completion: false,
                 });
                 console.log("added goal in calendar")
             }

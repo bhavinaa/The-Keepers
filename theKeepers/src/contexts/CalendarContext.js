@@ -23,13 +23,12 @@ export const CalendarProvider = ({ children }) => {
                 const tasks = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const task = data.taskId;
                     tasks.push({
                         id: doc.id,
                         title: data.title || '',
                         type: 'Task',
                         deadline: data.deadline ? new Date(data.deadline.seconds * 1000) : null,
-                        completion: task.completed || false ,
+                        completion: data.completion || false ,
                     });
                 });
                 setTodo((prevTodo) => {
@@ -49,7 +48,7 @@ export const CalendarProvider = ({ children }) => {
                         title: data.title || '',
                         type: 'Goal',
                         deadline: data.reminderDate ? new Date(data.reminderDate.seconds * 1000) : null,
-                        completion: getCompletion(data.goalID, data.reminderDate),
+                        completion: data.completion || false,
                     });
                 });
                 setTodo((prevTodo) => {

@@ -55,39 +55,46 @@ export const GoalProvider = ({ children }) => {
         let check = false;
         const goalDoc = doc(db, 'goal', goalID);
         const goalSnap = await getDoc(goalDoc);
-        const rewardDoc = doc(db, 'rewards', loggedInUser?.email);
-        const rewardSnap = await getDoc(rewardDoc);
+        
         if (goalSnap.exists()) {
             const goalData = goalSnap.data();
             const updatedReminders = goalData.reminderDates.map(r => {
                 if (r.date === reminder.date) {
                     check = !r.checked;
+                    console.log('Toggle reminder check:', check);
                     return { ...r, checked: !r.checked };
                 }
                 return r;
             });
-
+    
             await updateDoc(goalDoc, {
                 reminderDates: updatedReminders,
             });
-
-            const q = query(collection(db, "calendar"), where("goalId", "==", goalDoc), where("deadline", "==", reminder));
-            const goalSnap = await getDoc(goalDoc);
+    
+            const q = query(collection(db, "calendar"), where("goalId", "==", goalID), where("reminderDate", "==", reminder.date)); // there is an issue with retrieveal and update here
+            const querySnapshot = await getDocs(q);
             querySnapshot.forEach(async (doc) => {
                 await updateDoc(doc, {
                     completion: check,
+                });
+                console.log("found doc");
             });
-            });
-
-            if(rewardSnap.exists()){
+            
+    
+            const rewardDoc = doc(db, 'rewards', loggedInUser?.email);
+            const rewardSnap = await getDoc(rewardDoc);
+            if (rewardSnap.exists()) {
                 let pointsChange = check ? 200 : -200;
-
+    
                 await updateDoc(rewardDoc, {
                     points: increment(pointsChange)
-                })
+                });
             }
+        } else {
+            console.error("Goal document does not exist:", goalID);
         }
     };
+    
 
     const getCompletion = async (goalID, reminderDate) => {
         const goalDoc = doc(db, "goal", goalID);

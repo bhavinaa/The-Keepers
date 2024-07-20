@@ -41,6 +41,7 @@ export default function TaskScreen({ navigation }) {
         type: "Task",
         taskId: docRef, 
         deadline: Timestamp.fromDate(new Date(date)),
+        completion: false,
       });
       console.log("Document written with ID: ", docRef.id, selectedCategory);
       setTask("");

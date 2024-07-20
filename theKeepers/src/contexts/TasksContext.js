@@ -38,13 +38,28 @@ export const TasksProvider = ({ children }) => {
   const toggleTaskCompletion = async (taskId, completed) => {
     const taskDoc = doc(db, "todo", taskId);
     const taskSnap = await getDoc(taskDoc);
-    const rewardDoc = doc(db, "rewards", loggedInUser?.email);
-    const rewardSnap = await getDoc(rewardDoc);
-    const check = !completed;
-    let pointsChange = check ? 100 : -100;
+    
     if (taskSnap.exists()) {
       await updateDoc(taskDoc, { completed: !completed });
+      const check = !completed;
+      console.log("task updated", check);
+      const q = query(collection(db, 'calendar'), where("taskId", "==", taskDoc));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        console.log("doc updated");
+          const calendarDoc = querySnapshot.docs[0].ref; 
+          await updateDoc(calendarDoc, {
+            completion: check,
+          });
+          console.log("task updated in calendar");
+      }
+
+      const rewardDoc = doc(db, "rewards", loggedInUser?.email);
+      const rewardSnap = await getDoc(rewardDoc);
+      
       if(rewardSnap.exists()){
+        let pointsChange = check ? 100 : -100;
         await updateDoc(rewardDoc, {
             points: increment(pointsChange)
         })
@@ -61,7 +76,7 @@ export const TasksProvider = ({ children }) => {
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-        const calendarDoc = querySnapshot.docs[0].ref; // Get the first document's reference
+        const calendarDoc = querySnapshot.docs[0].ref; 
         await deleteDoc(calendarDoc);
     }
 };

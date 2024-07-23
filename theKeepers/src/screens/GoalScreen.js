@@ -99,39 +99,44 @@ export default function GoalScreen({ navigation }) {
 
     const calculateReminderDates = (deadline, reminderFrequency) => {
         const reminderDates = [];
-        const endDate = new Date(deadline);
-        let currentDate = new Date();
+        const today = new Date();
+        let currentDate = new Date(deadline);
     
         switch (reminderFrequency) {
             case 'Every Day':
-                while (currentDate <= endDate) {
+                while (currentDate >= today) {
                     reminderDates.push(currentDate.toISOString().split('T')[0]);
-                    currentDate.setDate(currentDate.getDate() + 1);
+                    currentDate.setDate(currentDate.getDate() - 1);
                 }
                 break;
             case 'Every Week':
-                while (currentDate <= endDate) {
+                while (currentDate >= today) {
                     reminderDates.push(currentDate.toISOString().split('T')[0]);
-                    currentDate.setDate(currentDate.getDate() + 7);
+                    currentDate.setDate(currentDate.getDate() - 7);
                 }
                 break;
             case 'Every Month':
-                while (currentDate <= endDate) {
+                while (currentDate >= today) {
                     reminderDates.push(currentDate.toISOString().split('T')[0]);
-                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    currentDate.setMonth(currentDate.getMonth() - 1);
                 }
                 break;
             case 'Every Year':
-                while (currentDate <= endDate) {
+                while (currentDate >= today) {
                     reminderDates.push(currentDate.toISOString().split('T')[0]);
-                    currentDate.setFullYear(currentDate.getFullYear() + 1);
+                    currentDate.setFullYear(currentDate.getFullYear() - 1);
                 }
                 break;
             default:
                 break;
         }
+
+        reminderDates.reverse();
+        
         return reminderDates;
     };
+    
+    
 
 
     return (

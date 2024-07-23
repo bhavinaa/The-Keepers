@@ -8,6 +8,8 @@ import { useCat} from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
 import TaskItem from '../components/TaskItem';
 import CatItem from '../components/CatItem';
+import Sidebar from '../components/Sidebar';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
@@ -15,6 +17,7 @@ export default function TaskScreen({ navigation }) {
   const [popVisible, setPopVisibility] = React.useState(false);
   const [popCat, setCatVisibility] = React.useState(false);
   const [popAddCat, setAddCatVisibility] = React.useState(false);
+  const [sidebarVisible, setSidebarVisibility] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState("");
   const [selectNewCat, setSelectedNewCat] = React.useState("");
   const { loggedInUser } = useAuth();
@@ -44,6 +47,8 @@ export default function TaskScreen({ navigation }) {
         completion: false,
       });
       console.log("Document written with ID: ", docRef.id, selectedCategory);
+      setPopVisibility(false);
+      alert("Task added successfully!");
       setTask("");
       setDate("");
       setSelectedCategory("");
@@ -52,7 +57,6 @@ export default function TaskScreen({ navigation }) {
       alert('Failed to add task');
     }
 
-    setPopVisibility(false);
   };
 
   const validateDate = (date) => {
@@ -104,11 +108,38 @@ export default function TaskScreen({ navigation }) {
     setAddCatVisibility(false);
   };
 
+  const closeSidebar = () => {
+    setSidebarVisibility(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
+        <View style={styles.headerContainer}>
+
+          <TouchableOpacity onPress={() => setSidebarVisibility(true)}>
+            <AntDesign name="bars" size={38} color="#FFFFFF" />
+          </TouchableOpacity>
+
+          <Text style={styles.header}>Tasks</Text>
+
+          <TouchableOpacity
+            style={styles.addButtonGoal}
+            onPress={() => navigation.navigate('Goal')}
+          >
+            <Text style={styles.addButtonText}>G</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setPopVisibility(true)}
+          >
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+
+        </View>
+
         <View style={styles.taskListContainer}>
-          <Text style= {styles.header}>Tasks</Text>
           <FlatList
             data={tasks}
             renderItem={renderTaskItem}
@@ -116,6 +147,14 @@ export default function TaskScreen({ navigation }) {
             contentContainerStyle={styles.taskList}
           />
         </View>
+
+        {sidebarVisible && (
+          <Sidebar
+            animationType='slide' 
+            categories={cat}
+            closeSidebar={closeSidebar} 
+          />
+        )}
 
         <Modal
           animationType='slide'
@@ -207,20 +246,6 @@ export default function TaskScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </Modal>
-
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setPopVisibility(true)}
-        >
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.addButtonGoal}
-          onPress={() => navigation.navigate('Goal')}
-        >
-          <Text style={styles.addButtonText}>G</Text>
-        </TouchableOpacity>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -234,12 +259,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  header:{
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 40, 
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    marginTop: 35
+  },
+  header: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    textAlign: 'center',
-    marginTop: 15,
   },
   input: {
     height: 40,
@@ -288,9 +319,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 15,
-    right: 25,
-    position: 'absolute',
   },
   addButtonGoal: {
     backgroundColor: "#302298",
@@ -299,9 +327,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    top: 15,
-    right: 90, 
-    position: 'absolute',
   },
   addButtonText: {
     fontSize: 24,
@@ -327,7 +352,7 @@ const styles = StyleSheet.create({
   taskListContainer: {
     height: '100%',
     width: '100%',
-    paddingBottom:40
+    paddingBottom: 40
   },
   taskList: {
     padding: 20,
@@ -342,11 +367,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     paddingBottom: 5, 
-    paddingTop:5,
+    paddingTop: 5,
   }, 
   catList: {
     height: 'auto',
     width: 'auto',
-    paddingBottom:20
+    paddingBottom: 20
   }
 });

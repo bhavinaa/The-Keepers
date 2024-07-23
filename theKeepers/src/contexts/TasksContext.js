@@ -9,6 +9,7 @@ export const useTasks = () => useContext(TasksContext);
 
 export const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
+  const [tasksByCategory, setTasksByCategory] = useState([]);
   const [loading, setLoading] = useState(true);
   const { loggedInUser } = useAuth();
 
@@ -81,10 +82,32 @@ export const TasksProvider = ({ children }) => {
     }
 };
 
+const getTasksByCategory = async (cat) => {
+  if (loggedInUser?.email) {
+    const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), where("category", "==", cat));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const tasksData = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        tasksData.push({
+          id: doc.id,
+          title: data.title,
+          deadline: data.deadline.toDate(),
+          completed: data.completed || false,
+          category: data.category || ''
+        });
+      });
+      setTasksByCategory(tasksData);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }
+}
+
   return (
-    <TasksContext.Provider value={{ tasks, loading, toggleTaskCompletion, deleteTask }}>
+    <TasksContext.Provider value={{ tasks, loading, toggleTaskCompletion, deleteTask, getTasksByCategory, tasksByCategory }}>
       {children}
     </TasksContext.Provider>
   );
 };
-

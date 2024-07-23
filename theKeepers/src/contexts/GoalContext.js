@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, getDoc, increment, getDocs } from "firebase/firestore";
+import { collection, query, where, onSnapshot, updateDoc, deleteDoc, doc, getDoc, increment, getDocs, Timestamp } from "firebase/firestore";
 import { db } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
@@ -55,7 +55,7 @@ export const GoalProvider = ({ children }) => {
         let check = false;
         const goalDoc = doc(db, 'goal', goalID);
         const goalSnap = await getDoc(goalDoc);
-        
+    
         if (goalSnap.exists()) {
             const goalData = goalSnap.data();
             const updatedReminders = goalData.reminderDates.map(r => {
@@ -71,15 +71,14 @@ export const GoalProvider = ({ children }) => {
                 reminderDates: updatedReminders,
             });
     
-            const q = query(collection(db, "calendar"), where("goalId", "==", goalID), where("reminderDate", "==", reminder.date)); // there is an issue with retrieveal and update here
+            const q = query(collection(db, 'calendar'), where("goalId", "==", goalID), where("reminderDate", "==", Timestamp.fromDate(new Date(reminder.date))));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach(async (doc) => {
-                await updateDoc(doc, {
+                await updateDoc(doc.ref, {
                     completion: check,
                 });
                 console.log("found doc");
             });
-            
     
             const rewardDoc = doc(db, 'rewards', loggedInUser?.email);
             const rewardSnap = await getDoc(rewardDoc);

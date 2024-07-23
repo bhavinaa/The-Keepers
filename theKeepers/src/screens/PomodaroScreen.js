@@ -8,16 +8,17 @@ import {
   Alert,
   ImageBackground,
   TextInput,
+  Keyboard
 } from 'react-native';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
-import {getFocusTip} from "../firebase/openAI"
+import { getFocusTip } from "../firebase/openAI";
 
 const Separator = () => <View style={styles.separator} />;
 
-const CustomButton = ({ onPress, title, color }) => (
+const CustomButton = ({ onPress, title, color, style }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={[styles.button, { backgroundColor: color }]}
+    style={[styles.button, { backgroundColor: color }, style]}
   >
     <Text style={styles.buttonText}>{title}</Text>
   </TouchableOpacity>
@@ -42,7 +43,8 @@ const renderTime = ({ remainingTime, focusTip }) => {
 };
 
 export default function App() {
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [duration, setDuration] = useState(60);
   const [key, setKey] = useState(0);
   const [focusTip, setFocusTip] = useState('');
@@ -62,6 +64,8 @@ export default function App() {
     setKey(prevKey => prevKey + 1);
     setDuration(customTime ? parseInt(customTime) * 60 : 1500);
     setIsPlaying(true);
+    setIsPaused(false);
+    Keyboard.dismiss(); // Close the keyboard
   };
 
   const startSBTimer = () => {
@@ -69,6 +73,8 @@ export default function App() {
     setKey(prevKey => prevKey + 1);
     setDuration(300);
     setIsPlaying(true);
+    setIsPaused(false);
+    Keyboard.dismiss(); // Close the keyboard
   };
 
   const startLBTimer = () => {
@@ -76,11 +82,30 @@ export default function App() {
     setKey(prevKey => prevKey + 1);
     setDuration(900);
     setIsPlaying(true);
+    setIsPaused(false);
+    Keyboard.dismiss(); // Close the keyboard
+  };
+
+  const pauseTimer = () => {
+    if (isPlaying) {
+      setIsPlaying(false);
+      setIsPaused(true);
+      Alert.alert('Timer Paused');
+    }
+  };
+
+  const resumeTimer = () => {
+    if (isPaused) {
+      setIsPlaying(true);
+      setIsPaused(false);
+      Alert.alert('Timer Resumed');
+    }
   };
 
   const stopPMTimer = () => {
     Alert.alert('Stopping Timer');
     setIsPlaying(false);
+    setIsPaused(false);
   };
 
   return (
@@ -90,9 +115,9 @@ export default function App() {
         resizeMode="cover"
         style={styles.image}
       >
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.innerContainer}>
           <View style={styles.header}>
-            <Text style={styles.title}> Pomodoro </Text>
+            <Text style={styles.title}>Pomodoro</Text>
           </View>
           <View style={styles.timerContainer}>
             <CountdownCircleTimer
@@ -106,15 +131,13 @@ export default function App() {
                 Alert.alert('Timer Finished');
               }}
             >
-              {({ remainingTime }) => renderTime({ remainingTime})}
+              {({ remainingTime }) => renderTime({ remainingTime })}
             </CountdownCircleTimer>
 
             <Separator />
             <Separator />
             <Text style={styles.focusTip}>{focusTip}</Text>
-            
           </View>
-
 
           <View style={styles.inputContainer}>
             <TextInput
@@ -124,10 +147,11 @@ export default function App() {
               value={customTime}
               onChangeText={text => setCustomTime(text)}
             />
-            <Separator />
-
-
+            <TouchableOpacity onPress={() => Keyboard.dismiss()} style={styles.closeKeyboardButton}>
+              <Text style={styles.closeKeyboardButtonText}>Enter</Text>
+            </TouchableOpacity>
           </View>
+
           <View style={styles.buttonContainer}>
             <View style={styles.row}>
               <CustomButton
@@ -136,8 +160,6 @@ export default function App() {
                 onPress={startPMTimer}
               />
               <Separator />
-
-
               <CustomButton
                 title="Short Break"
                 color="#3B9AE1"
@@ -149,14 +171,22 @@ export default function App() {
                 color="#A8DADC"
                 onPress={startLBTimer}
               />
-              <Separator />
             </View>
-            <CustomButton
-              title="Stop"
-              color="#FFD166"
-              onPress={stopPMTimer}
-              style={styles.stopButton}
-            />
+            <View style={styles.controlRow}>
+              <CustomButton
+                title={isPlaying ? (isPaused ? "Resume" : "Pause") : "Start"}
+                color={isPaused ? "#A8DADC" : "#FFD166"}
+                onPress={isPaused ? resumeTimer : pauseTimer}
+                style={styles.pauseButton}
+              />
+              <Separator />
+              <CustomButton
+                title="Stop"
+                color="#FFD166"
+                onPress={stopPMTimer}
+                style={styles.stopButton}
+              />
+            </View>
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -168,13 +198,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
   image: {
     flex: 1,
     justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
-    marginTop: 60, // Adjust this value to move the header down
+    marginTop: 20,
     marginBottom: 10,
   },
   title: {
@@ -194,8 +229,16 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    width: '100%',
+    flexWrap: 'wrap',
+  },
+  controlRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    maxWidth: 500,
   },
   button: {
     alignItems: 'center',
@@ -204,12 +247,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 10,
     elevation: 3,
-    width: 100,
+    width: '30%',
     marginVertical: 10,
-    marginHorizontal: 5,
   },
   stopButton: {
-    alignSelf: 'flex-end',
+    width: '48%',
+  },
+  pauseButton: {
+    width: '48%',
+    backgroundColor: '#FFD166',
   },
   buttonText: {
     fontSize: 16,
@@ -229,28 +275,35 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginTop: 10,
+    textAlign: 'center',
   },
   separator: {
     height: 10,
     width: 10,
   },
   inputContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
   input: {
     height: 40,
-    width: '70%',
+    width: '80%',
     borderColor: '#CCCCCC',
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: '#FFFFFF',
+    marginRight: 10,
   },
-  focusTip: {
+  closeKeyboardButton: {
+    padding: 10,
+    backgroundColor: '#FFD166',
+    borderRadius: 10,
+  },
+  closeKeyboardButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginTop: 10,
+    color: '#000000',
   },
 });

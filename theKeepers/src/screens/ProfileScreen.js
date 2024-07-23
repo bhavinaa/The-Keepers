@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, ImageBackground, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, SafeAreaView, ImageBackground, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,13 +7,23 @@ import { signOut } from 'firebase/auth';
 import { authentication } from '../firebase/config'; 
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { profilepic } from '../assets/profilepic';
+import { ProgressBar } from 'react-native-paper';
 
 export default function ProfileScreen({ navigation }) {
   const { loggedInUser, setLoggedInUser } = useAuth(); 
   const [username, setUsername] = useState('');
   const [image, setImage] = useState(null);
   const [points, setPoints] = useState(0);
+  const [level, setLevel] = useState(0);
+  const [levelUpAnimation] = useState(new Animated.Value(0)); // Animation state
   const ref = doc(db, "Profile", loggedInUser?.email);
+
+  // Function to calculate points required for a given level
+  const pointsForLevel = (lvl) => {
+    const basePoints = 100;
+    const multiplier = 1.5;
+    return Math.floor(basePoints * Math.pow(multiplier, lvl - 1));
+  };
 
   useEffect(() => {
     const unsubscribeImage = onSnapshot(doc(db, 'Profile', loggedInUser?.email), (doc) => {
@@ -41,18 +51,35 @@ export default function ProfileScreen({ navigation }) {
     });
 
     const updatePoints = onSnapshot(doc(db, "rewards", loggedInUser?.email), (doc) => {
-      if(doc.exists()){
+      if (doc.exists()) {
         const data = doc.data();
         setPoints(data.points);
+
+        let newLevel = 0;
+        while (data.points >= pointsForLevel(newLevel + 1)) {
+          newLevel++;
+        }
+
+        if (newLevel > level) {
+          animateLevelUp();
+        }
+        setLevel(newLevel);
       }
-    })
-    // Cleanup subscriptions on unmount
+    });
+
     return () => {
       unsubscribeImage();
       unsubscribeUsername();
       updatePoints();
     };
-  }, [loggedInUser]);
+  }, [loggedInUser, level]);
+
+  const animateLevelUp = () => {
+    Animated.sequence([
+      Animated.timing(levelUpAnimation, { toValue: 1, duration: 1000, useNativeDriver: true }),
+      Animated.timing(levelUpAnimation, { toValue: 0, duration: 1000, useNativeDriver: true })
+    ]).start();
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,7 +113,10 @@ export default function ProfileScreen({ navigation }) {
         console.error('Error signing out:', err);
       });
   };
-  
+
+  const nextLevelPoints = pointsForLevel(level + 1);
+  const progressToNextLevel = (points - pointsForLevel(level)) / (nextLevelPoints - pointsForLevel(level));
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
@@ -105,7 +135,15 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.email}>{loggedInUser ? loggedInUser.email : ''}</Text>
             </View>
           </View>
-          <Text style= {styles.email}>{points}</Text>
+          <Animated.View style={[styles.levelUpContainer, { opacity: levelUpAnimation }]}>
+            <Text style={styles.levelUpText}>Level Up!</Text>
+          </Animated.View>
+          <ProgressBar progress={progressToNextLevel} color="white" style={styles.progressBar} />
+          <View style={styles.statsContainer}>
+            <Text style={styles.statsText}>Points: {points}</Text>
+            <Text style={styles.statsText}>Level: {level}</Text>
+            <Text style={styles.statsText}>Points to next level: {nextLevelPoints - points}</Text>
+          </View>
         </View>
       </ImageBackground>
       <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} style={styles.editButton}>
@@ -116,6 +154,25 @@ export default function ProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  progressBar: {
+    marginTop: 10,
+    width: '100%',
+    height: 10,
+  },
+  levelUpContainer: {
+    position: 'absolute',
+    top: 50,
+    left: '50%',
+    transform: [{ translateX: -50 }],
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 10,
+  },
+  levelUpText: {
+    color: 'white',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -137,13 +194,13 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '100%',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center', 
   },
   profileContainer: {
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center', 
     marginTop: 20,
-    marginLeft: 20,
+    marginBottom: 20,
   },
   profileIcon: {
     width: 100,
@@ -158,13 +215,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  initials: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
   userInfoContainer: {
     marginTop: 10,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   username: {
     fontSize: 20,
@@ -201,5 +254,18 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  statsContainer: {
+    marginTop: 30,
+    padding: 15,
+    backgroundColor: '#7b68ee', // Background color for the stats container
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center', // Centering the text within the container
+  },
+  statsText: {
+    color: 'white',
+    fontSize: 16,
+    marginVertical: 5,
   },
 });

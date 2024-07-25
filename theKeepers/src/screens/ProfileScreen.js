@@ -15,7 +15,7 @@ export default function ProfileScreen({ navigation }) {
   const [image, setImage] = useState(null);
   const [points, setPoints] = useState(0);
   const [level, setLevel] = useState(0);
-  const [levelUpAnimation] = useState(new Animated.Value(0)); // Animation state
+  const [levelUpAnimation] = useState(new Animated.Value(0)); // Animation state need to change, if not it is not updated HELP 
   const ref = doc(db, "Profile", loggedInUser?.email);
 
   // Function to calculate points required for a given level
@@ -54,16 +54,7 @@ export default function ProfileScreen({ navigation }) {
       if (doc.exists()) {
         const data = doc.data();
         setPoints(data.points);
-
-        let newLevel = 0;
-        while (data.points >= pointsForLevel(newLevel + 1)) {
-          newLevel++;
-        }
-
-        if (newLevel > level) {
-          animateLevelUp();
-        }
-        setLevel(newLevel);
+        updateLevel(data.points);
       }
     });
 
@@ -72,7 +63,19 @@ export default function ProfileScreen({ navigation }) {
       unsubscribeUsername();
       updatePoints();
     };
-  }, [loggedInUser, level]);
+  }, [loggedInUser]);
+
+  const updateLevel = (currentPoints) => {
+    let newLevel = 0;
+    while (currentPoints >= pointsForLevel(newLevel + 1)) {
+      newLevel++;
+    }
+
+    if (newLevel > level) {
+      setLevel(newLevel);
+      animateLevelUp();
+    }
+  };
 
   const animateLevelUp = () => {
     Animated.sequence([
@@ -258,10 +261,10 @@ const styles = StyleSheet.create({
   statsContainer: {
     marginTop: 30,
     padding: 15,
-    backgroundColor: '#7b68ee', // Background color for the stats container
+    backgroundColor: '#7b68ee', 
     borderRadius: 10,
     width: '100%',
-    alignItems: 'center', // Centering the text within the container
+    alignItems: 'center', 
   },
   statsText: {
     color: 'white',

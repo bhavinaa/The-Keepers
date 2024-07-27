@@ -2,63 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, StyleSheet, FlatList } from 'react-native';
 import { useAuth } from "../contexts/AuthContext";
 import { useTasks } from "../contexts/TasksContext";
+import TaskItem from '../components/TaskItem';
 import { authentication } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import Feather from 'react-native-vector-icons/Feather';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 export default function HomeScreen({ navigation }) {
-  const { loggedInUser, setLoggedInUser } = useAuth();
-  const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
-  const [todayTasks, setTodayTasks] = useState([]);
-
-  const signOutUser = () => {
-    signOut(authentication)
-      .then(() => {
-        setLoggedInUser(null);
-      })
-      .catch((err) => {
-        // Handle error appropriately, perhaps by setting an error state
-      });
-  };
-
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    if (tasks[today]) {
-      setTodayTasks(tasks[today]);
-    } else {
-      setTodayTasks([]);
-    }
-  }, [tasks]);
+  const { loggedInUser } = useAuth();
+  const { toggleTaskCompletion, deleteTask, todayTasks } = useTasks();
 
   const renderTask = ({ item }) => (
-    <Swipeable
-        renderRightActions={() => (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => deleteTask(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        )}
-      >
-        <View style={styles.taskContainer}>
-          <View style={styles.taskInfo}>
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={() => toggleTaskCompletion(item.id, item.completed)}
-            >
-              {item.completed ? (
-                <Feather name="check-circle" size={24} color="green" />
-              ) : (
-                <Feather name="circle" size={24} color="black" />
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-    </Swipeable>
-    
+    <TaskItem 
+      item={item} 
+      toggleTaskCompletion={toggleTaskCompletion} 
+      deleteTask={deleteTask} 
+    />
   );
 
   return (

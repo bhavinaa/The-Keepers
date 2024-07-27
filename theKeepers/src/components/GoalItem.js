@@ -69,9 +69,9 @@ class GoalItem extends PureComponent {
                                         <View key={index} style={styles.reminderItem}>
                                             <TouchableOpacity onPress={() => toggleReminder(goal.id, rem)}>
                                                 {rem.checked ? (
-                                                    <Feather name="check-circle" size={24} color="#228b22" />
+                                                    <Feather name="check-circle" size={26} color="#228b22" />
                                                 ) : (
-                                                    <Feather name="circle" size={24} color="white" />
+                                                    <Feather name="circle" size={26} color="white" />
                                                 )}
                                             </TouchableOpacity>
                                             <Text style={styles.reminderText}>{formattedDate}</Text>

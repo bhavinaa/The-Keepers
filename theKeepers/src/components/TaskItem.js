@@ -36,9 +36,9 @@ class TaskItem extends PureComponent {
             onPress={() => toggleTaskCompletion(item.id, item.completed)}
           >
             {item.completed ? (
-              <Feather name="check-circle" size={24} color="green" />
+              <Feather name="check-circle" size={26} color="green" />
             ) : (
-              <Feather name="circle" size={24} color="black" />
+              <Feather name="circle" size={26} color="black" />
             )}
           </TouchableOpacity>
         </View>

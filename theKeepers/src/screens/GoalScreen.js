@@ -8,6 +8,15 @@ import { useGoal } from '../contexts/GoalContext';
 import GoalItem from '../components/GoalItem';
 import DatePicker from 'react-native-modern-datepicker';
 
+/**
+ * The main screen for managing goals.
+ * 
+ * @param {Object} navigation - The navigation object provided by React Navigation.
+ * 
+ * @returns {JSX.Element} - The JSX element for the GoalScreen.
+ */
+
+
 export default function GoalScreen({ navigation }) {
     const [popVisible, setPopVisibility] = React.useState(false);
     const [title, setTitle] = React.useState("");
@@ -17,7 +26,13 @@ export default function GoalScreen({ navigation }) {
     const [reVisible, setReVisibilitty] = React.useState(false);
     const { loggedInUser } = useAuth();
     const { goal, deleteGoal, toggleReminder } = useGoal();
-    
+
+/**
+ * Handles the addition of a new goal.
+ * 
+ * @returns {Promise<void>} - A promise that resolves when the goal is added successfully.
+ */
+
     const handleAddGoal = async () => {
         const formattedDate = date.replace(/\//g, '-');
         
@@ -68,11 +83,28 @@ export default function GoalScreen({ navigation }) {
             alert("Failed to add goal");
         }
     };
-    
+
+/**
+ * Handles the addition of a new reminder frequency.
+ * 
+ * @param {string} re - The reminder frequency to be added.
+ * 
+ * @returns {void}
+ */
+
+
     const handleAddReminder = (re) => {
         setSelectedReminder(re);
         setReVisibilitty(false);
     };
+
+/**
+ * Renders a single goal item.
+ * 
+ * @param {Object} item - The goal item to be rendered.
+ * 
+ * @returns {JSX.Element} - The JSX element for the goal item.
+ */
 
     const renderGoalItem = ({ item }) => (
         <GoalItem 
@@ -82,6 +114,13 @@ export default function GoalScreen({ navigation }) {
         />
     );
 
+/**
+ * Validates the entered date.
+ * 
+ * @param {string} date - The date to be validated.
+ * 
+ * @returns {boolean} - True if the date is valid, false otherwise.
+ */
     const validateDate = (date) => {
         const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
         if (!regex.test(date)) {
@@ -93,6 +132,16 @@ export default function GoalScreen({ navigation }) {
         return enteredDate > today;
     };
 
+/**
+ * Calculates the reminder dates based on the deadline and reminder frequency.
+ * 
+ * @param {string} deadline - The deadline for the goal.
+ * @param {string} reminderFrequency - The reminder frequency.
+ * 
+ * @returns {string[]} - An array of reminder dates.
+ */
+
+    
     const calculateReminderDates = (deadline, reminderFrequency) => {
         const reminderDates = [];
         const today = new Date();

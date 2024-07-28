@@ -6,6 +6,17 @@ import TaskItem from '../components/TaskItem';
 import { db } from "../firebase/config";
 import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 
+
+/**
+ * Calculates the reminder dates based on the deadline and reminder frequency.
+ * 
+ * @param {string} deadline - The deadline for the goal.
+ * @param {string} reminderFrequency - The reminder frequency.
+ * 
+ * @returns {string[]} - An array of reminder dates.
+ */
+
+
 export default function HomeScreen({ navigation }) {
   const { loggedInUser } = useAuth();
   const { toggleTaskCompletion, deleteTask } = useTasks();

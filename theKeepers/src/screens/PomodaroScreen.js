@@ -41,6 +41,13 @@ const renderTime = ({ remainingTime, focusTip }) => {
     </View>
   );
 };
+/**
+ * The main component of the Pomodoro timer application.
+ * This component manages the timer, user interactions, and displays the timer UI.
+ *
+ * @returns {JSX.Element} - The rendered component.
+ */
+
 
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,6 +56,8 @@ export default function App() {
   const [key, setKey] = useState(0);
   const [focusTip, setFocusTip] = useState('');
   const [customTime, setCustomTime] = useState('');
+
+  // Fetch a focus tip from the server and update the focusTip state
 
   useEffect(() => {
     const fetchFocusTip = async () => {
@@ -59,6 +68,8 @@ export default function App() {
     fetchFocusTip();
   }, [key]);
 
+  // Start the Pomodoro timer
+
   const startPMTimer = () => {
     Alert.alert('Starting Pomodoro timer');
     setKey(prevKey => prevKey + 1);
@@ -67,6 +78,8 @@ export default function App() {
     setIsPaused(false);
     Keyboard.dismiss(); // Close the keyboard
   };
+
+  // Start the Short Break timer
 
   const startSBTimer = () => {
     Alert.alert('Starting Short Break timer');
@@ -77,6 +90,8 @@ export default function App() {
     Keyboard.dismiss(); // Close the keyboard
   };
 
+  // Start the Long Break timer
+
   const startLBTimer = () => {
     Alert.alert('Starting Long Break timer');
     setKey(prevKey => prevKey + 1);
@@ -86,6 +101,8 @@ export default function App() {
     Keyboard.dismiss(); // Close the keyboard
   };
 
+  // Pause the timer
+
   const pauseTimer = () => {
     if (isPlaying) {
       setIsPlaying(false);
@@ -94,6 +111,7 @@ export default function App() {
     }
   };
 
+  // Resume the timer
   const resumeTimer = () => {
     if (isPaused) {
       setIsPlaying(true);
@@ -102,12 +120,14 @@ export default function App() {
     }
   };
 
+  // Stop the timer
   const stopPMTimer = () => {
     Alert.alert('Stopping Timer');
     setIsPlaying(false);
     setIsPaused(false);
   };
 
+  // Render the component
   return (
     <View style={styles.container}>
       <ImageBackground

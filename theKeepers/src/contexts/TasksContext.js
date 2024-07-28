@@ -46,7 +46,7 @@ export const TasksProvider = ({ children }) => {
       await updateDoc(taskDoc, { completed: !completed });
       const check = !completed;
       console.log("task updated", check);
-      const q = query(collection(db, 'calendar'), where("taskId", "==", taskDoc));
+      const q = query(collection(db, 'calendar'), where("taskId", "==", taskId));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
@@ -75,7 +75,7 @@ export const TasksProvider = ({ children }) => {
     const taskDoc = doc(db, "todo", taskId);
     await deleteDoc(taskDoc);
 
-    const q = query(collection(db, 'calendar'), where("taskId", "==", taskDoc));
+    const q = query(collection(db, 'calendar'), where("taskId", "==", taskId));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {

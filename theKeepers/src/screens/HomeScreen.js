@@ -3,14 +3,64 @@ import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, StyleSheet
 import { useAuth } from "../contexts/AuthContext";
 import { useTasks } from "../contexts/TasksContext";
 import TaskItem from '../components/TaskItem';
-import { authentication } from "../firebase/config";
-import { signOut } from "firebase/auth";
-import Feather from 'react-native-vector-icons/Feather';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { db } from "../firebase/config";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 
 export default function HomeScreen({ navigation }) {
   const { loggedInUser } = useAuth();
-  const { toggleTaskCompletion, deleteTask, todayTasks } = useTasks();
+  const { toggleTaskCompletion, deleteTask } = useTasks();
+  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState([]);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    if (loggedInUser?.email) {
+      const today = new Date();
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const tasksQuery = query(
+        collection(db, "todo"),
+        where("email", "==", loggedInUser?.email),
+        where("deadline", ">=", today),
+        where("deadline", "<", tomorrow)
+      );
+
+      const unsubscribeUsername = onSnapshot(doc(db, 'Users', loggedInUser?.email), (doc) => {
+        if (doc.exists()) {
+          const userData = doc.data();
+          setUsername(userData?.username || 'Stargazer');
+        } else {
+          setUsername('Stargazer');
+        }
+      }, (error) => {
+        console.error("Error fetching user document:", error);
+        setUsername('Stargazer');
+      });
+
+      const unsubscribe = onSnapshot(tasksQuery, (querySnapshot) => {
+        const tasksData = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          tasksData.push({
+            id: doc.id,
+            title: data.title,
+            deadline: data.deadline.toDate(),
+            completed: data.completed || false,
+            category: data.category || ''
+          });
+        });
+        setTasks(tasksData);
+        setLoading(false);
+      });
+
+      return () => { 
+        unsubscribe();
+        unsubscribeUsername();
+      }
+    }
+  }, [loggedInUser]);
 
   const renderTask = ({ item }) => (
     <TaskItem 
@@ -24,7 +74,7 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.overlay}>
-          <Text style={styles.welcomeText}>Welcome, Stargazer</Text>
+          <Text style={styles.welcomeText}>Welcome, {username}</Text>
           <View style={styles.gridContainer}>
             <View style={styles.grid}>
               <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.button}>
@@ -51,12 +101,16 @@ export default function HomeScreen({ navigation }) {
           </View>
           <View style={styles.taskListContainer}>
             <Text style={styles.taskListTitle}>Tasks Due Today</Text>
-            <FlatList
-              data={todayTasks}
-              renderItem={renderTask}
-              keyExtractor={(item) => item.id}
-              ListEmptyComponent={<Text style={styles.noTasksText}>No tasks due today</Text>}
-            />
+            {loading ? (
+              <Text style={styles.loadingText}>Loading...</Text>
+            ) : (
+              <FlatList
+                data={tasks}
+                renderItem={renderTask}
+                keyExtractor={(item) => item.id}
+                ListEmptyComponent={<Text style={styles.noTasksText}>No tasks due today</Text>}
+              />
+            )}
           </View>
         </View>
       </ImageBackground>
@@ -73,7 +127,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    padding: 15
+    padding: 15,
   },
   welcomeText: {
     fontSize: 24,
@@ -127,23 +181,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  taskContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  taskInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  taskTitle: {
+  loadingText: {
+    color: 'white',
     fontSize: 16,
-    color: 'black',
-  },
-  checkboxContainer: {
-    padding: 5,
+    textAlign: 'center',
+    marginTop: 20,
   },
   noTasksText: {
     color: 'white',
@@ -151,17 +193,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
-  deleteButton: {
-    backgroundColor: '#302298',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '75%',
-    marginTop: 10,
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
 });
+

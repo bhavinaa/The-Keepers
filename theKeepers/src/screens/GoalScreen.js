@@ -20,18 +20,14 @@ export default function GoalScreen({ navigation }) {
     
     const handleAddGoal = async () => {
         const formattedDate = date.replace(/\//g, '-');
-        setDate(formattedDate);
-
+        
         if (!validateDate(formattedDate)) {
             alert('Please select a valid date');
             return;
         }
 
-        if (selectedReminder === "") {
-            setSelectedReminder("Never");
-        }
-    
-        const reminderDates = calculateReminderDates(date, selectedReminder);
+        const reminder = selectedReminder || "Never";
+        const reminderDates = calculateReminderDates(formattedDate, reminder);
         const datesList = reminderDates.map(r => ({
             date: r,
             checked: false
@@ -43,16 +39,12 @@ export default function GoalScreen({ navigation }) {
                 email: loggedInUser?.email,
                 title: title,
                 description: description,
-                deadline: Timestamp.fromDate(new Date(date)),
-                reminder: selectedReminder,
+                deadline: Timestamp.fromDate(new Date(formattedDate)),
+                reminder: reminder,
                 reminderDates: datesList,
                 reminderCount: reminderCount,
             });
-            setPopVisibility(false);
-            alert("Goal added successfully!");
-    
-            console.log("Goal document written with ID: ", goalDocRef.id);
-    
+
             for (const reminderDate of reminderDates) {
                 await addDoc(collection(db, "calendar"), {
                     email: loggedInUser?.email,
@@ -60,32 +52,33 @@ export default function GoalScreen({ navigation }) {
                     type: "Reminder",
                     goalId: goalDocRef.id,
                     reminderDate: Timestamp.fromDate(new Date(reminderDate)),
-                    deadline: Timestamp.fromDate(new Date(date)),
+                    deadline: Timestamp.fromDate(new Date(formattedDate)),
                     completion: false,
                 });
-                console.log("added goal in calendar");
             }
+
+            setPopVisibility(false);
             setTitle("");
             setDescription("");
             setSelectedReminder("");
             setDate("");
-    
+            alert("Goal added successfully!");
         } catch (error) {
             console.error("Error adding goal: ", error);
             alert("Failed to add goal");
         }
     };
     
-    const handleAddReminder = async (re) => {
+    const handleAddReminder = (re) => {
         setSelectedReminder(re);
         setReVisibilitty(false);
     };
 
     const renderGoalItem = ({ item }) => (
         <GoalItem 
-        goal={item} 
-        deleteGoal={deleteGoal} 
-        toggleReminder={toggleReminder}
+            goal={item} 
+            deleteGoal={deleteGoal} 
+            toggleReminder={toggleReminder}
         />
     );
 
@@ -170,9 +163,7 @@ export default function GoalScreen({ navigation }) {
                 <Modal
                     animationType='slide'
                     visible={popVisible}
-                    onRequestClose={() => {
-                        setPopVisibility(!popVisible);
-                    }}
+                    onRequestClose={() => setPopVisibility(!popVisible)}
                 >   
                     <View style={styles.modalView}>
                         <TextInput
@@ -180,7 +171,7 @@ export default function GoalScreen({ navigation }) {
                             placeholder="Title"
                             placeholderTextColor="#696969"
                             value={title}
-                            onChangeText={(title) => setTitle(title)}
+                            onChangeText={setTitle}
                         />
 
                         <TextInput
@@ -188,12 +179,12 @@ export default function GoalScreen({ navigation }) {
                             placeholder="Description"
                             placeholderTextColor="#696969"
                             value={description}
-                            onChangeText={(description) => setDescription(description)}
+                            onChangeText={setDescription}
                         />
 
                         <DatePicker
                             date={date}
-                            onDateChange={(date) => setDate(date)}
+                            onDateChange={setDate}
                             mode="calendar"
                             textColor="#FFFFFF"
                             style={styles.datePicker}
@@ -219,9 +210,7 @@ export default function GoalScreen({ navigation }) {
                 <Modal
                     animationType='slide'
                     visible={reVisible}
-                    onRequestClose={() => {
-                        setReVisibilitty(!reVisible);
-                    }}
+                    onRequestClose={() => setReVisibilitty(!reVisible)}
                 >
                     <View style={styles.modalView}>
                         <Text style={styles.title}>Reminder</Text>
@@ -303,6 +292,7 @@ const styles = StyleSheet.create({
         color: "white"
     },
     datePicker: {
+        width:"119%",
         marginVertical: 20,
         borderRadius: 20,
     },

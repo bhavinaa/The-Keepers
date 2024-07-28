@@ -4,7 +4,7 @@ import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from '../firebase/config'; 
 import { useTasks } from '../contexts/TasksContext'; 
 import { useAuth } from '../contexts/AuthContext';
-import { useCat} from '../contexts/CatContext';
+import { useCat } from '../contexts/CatContext';
 import { Modal } from 'react-native-paper';
 import TaskItem from '../components/TaskItem';
 import CatItem from '../components/CatItem';
@@ -13,257 +13,252 @@ import { AntDesign } from '@expo/vector-icons';
 import DatePicker from 'react-native-modern-datepicker';
 
 export default function TaskScreen({ navigation }) {
-  const [task, setTask] = React.useState("");
-  const [date, setDate] = React.useState(new Date());
-  const [popVisible, setPopVisibility] = React.useState(false);
-  const [popCat, setCatVisibility] = React.useState(false);
-  const [popAddCat, setAddCatVisibility] = React.useState(false);
-  const [sidebarVisible, setSidebarVisibility] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState("");
-  const [selectNewCat, setSelectedNewCat] = React.useState("");
-  const { loggedInUser } = useAuth();
-  const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
-  const {cat, deleteCat} = useCat();
-  const [open, setOpen] = React.useState(false);
+    const [task, setTask] = React.useState("");
+    const [date, setDate] = React.useState("");
+    const [popVisible, setPopVisibility] = React.useState(false);
+    const [popCat, setCatVisibility] = React.useState(false);
+    const [popAddCat, setAddCatVisibility] = React.useState(false);
+    const [sidebarVisible, setSidebarVisibility] = React.useState(false);
+    const [selectedCategory, setSelectedCategory] = React.useState("");
+    const [selectNewCat, setSelectedNewCat] = React.useState("");
+    const { loggedInUser } = useAuth();
+    const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
+    const { cat, deleteCat } = useCat();
 
-  const handleAddTask = async () => {
-    const formattedDate = date.replace(/\//g, '-');
-    setDate(formattedDate)
+    const handleAddTask = async () => {
+        const formattedDate = date.replace(/\//g, '-');
+        
+        if (!validateDate(formattedDate)) {
+            alert('Please select a valid date');
+            return;
+        }
 
-    if (!validateDate(formattedDate)) {
-        alert('Please select a valid date');
-        return;
-    }
+        try {
+            const dateObject = new Date(formattedDate);
 
-    try {
-        const dateObject = new Date(formattedDate);
+            const docRef = await addDoc(collection(db, "todo"), {
+                email: loggedInUser?.email,
+                title: task,
+                completed: false,
+                deadline: Timestamp.fromDate(dateObject),
+                category: selectedCategory
+            });
 
-        const docRef = await addDoc(collection(db, "todo"), {
-            email: loggedInUser?.email,
-            title: task,
-            completed: false,
-            deadline: Timestamp.fromDate(dateObject),
-            category: selectedCategory
-        });
-        const calDocRef = await addDoc(collection(db, "calendar"), {
-            email: loggedInUser?.email,
-            title: task,
-            type: "Task",
-            taskId: docRef.id,
-            deadline: Timestamp.fromDate(dateObject),
-            completion: false,
-        });
-        console.log("Document written with ID: ", docRef.id, selectedCategory);
-        setPopVisibility(false);
-        alert("Task added successfully!");
-        setTask("");
-        setDate(new Date());
-        setSelectedCategory("");
-    } catch (error) {
-        console.error("Error adding document in taskscreen: ", error);
-        alert('Failed to add task');
-    }
-};
+            const calDocRef = await addDoc(collection(db, "calendar"), {
+                email: loggedInUser?.email,
+                title: task,
+                type: "Task",
+                taskId: docRef.id,
+                deadline: Timestamp.fromDate(dateObject),
+                completion: false,
+            });
 
-  const validateDate = (date) => {
-    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-    if (!regex.test(date)) {
-        return false;
-    }
-    const enteredDate = new Date(date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return enteredDate > today;
-  };
+            console.log("Document written with ID: ", docRef.id, selectedCategory);
+            setPopVisibility(false);
+            alert("Task added successfully!");
+            setTask("");
+            setDate("");
+            setSelectedCategory("");
+        } catch (error) {
+            console.error("Error adding document in taskscreen: ", error);
+            alert('Failed to add task');
+        }
+    };
 
+    const validateDate = (date) => {
+        const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+        if (!regex.test(date)) {
+            return false;
+        }
+        const enteredDate = new Date(date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return enteredDate >= today;
+    };
 
+    const renderTaskItem = ({ item }) => (
+        <TaskItem 
+            item={item} 
+            toggleTaskCompletion={toggleTaskCompletion} 
+            deleteTask={deleteTask} 
+        />
+    );
 
+    const selectCategory = (category) => {
+        setSelectedCategory(category);
+        setCatVisibility(false);
+    };
 
-  const renderTaskItem = ({ item }) => (
-    <TaskItem 
-      item={item} 
-      toggleTaskCompletion={toggleTaskCompletion} 
-      deleteTask={deleteTask} 
-    />
-  );
+    const renderCatItem = ({ item }) => (
+        <CatItem 
+            cat={item} 
+            selectCategory={selectCategory} 
+            deleteCat={deleteCat} 
+        />
+    );
 
-  const selectCategory = (category) => {
-    setSelectedCategory(category);
-    setCatVisibility(false);
-  };
+    const addCat = async () => {
+        if (selectNewCat == "") {
+            alert('Please enter a category');
+            return;
+        }
 
-  const renderCatItem = ({ item }) => (
-    <CatItem 
-    cat={item} 
-    selectCategory={selectCategory} 
-    deleteCat={deleteCat} 
-    />
-  );
+        try {
+            const docRef = await addDoc(collection(db, "category"), {
+                email: loggedInUser?.email,
+                cat: selectNewCat
+            });
 
-  const addCat = async () => {
-    if (selectNewCat == "") {
-      alert('Please enter a category');
-      return;
-    }
+            console.log("Document written with ID: ", docRef.id, selectNewCat);
+            setSelectedNewCat("");
+        } catch (error) {
+            console.error("Error adding category document in taskscreen: ", error);
+            alert('Failed to add a new category');
+        }
 
-    try {
-      const docRef = await addDoc(collection(db, "category"), {
-        email: loggedInUser?.email,
-        cat: selectNewCat
-      });
-      console.log("Document written with ID: ", docRef.id, selectNewCat);
-      setSelectedNewCat("");
-    } catch (error) {
-      console.error("Error adding category document in taskscreen: ", error);
-      alert('Failed to add a new category');
-    }
+        setAddCatVisibility(false);
+    };
 
-    setAddCatVisibility(false);
-  };
+    const closeSidebar = () => {
+        setSidebarVisibility(false);
+    };
 
-  const closeSidebar = () => {
-    setSidebarVisibility(false);
-  };
+    return (
+        <SafeAreaView style={styles.container}>
+            <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
+                <View style={styles.headerContainer}>
+                    <TouchableOpacity onPress={() => setSidebarVisibility(true)}>
+                        <AntDesign name="bars" size={38} color="#FFFFFF" />
+                    </TouchableOpacity>
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
-        <View style={styles.headerContainer}>
+                    <Text style={styles.header}>Tasks</Text>
 
-          <TouchableOpacity onPress={() => setSidebarVisibility(true)}>
-            <AntDesign name="bars" size={38} color="#FFFFFF" />
-          </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.addButtonGoal}
+                        onPress={() => navigation.navigate('Goal')}
+                    >
+                        <Text style={styles.addButtonText}>G</Text>
+                    </TouchableOpacity>
 
-          <Text style={styles.header}>Tasks</Text>
+                    <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => setPopVisibility(true)}
+                    >
+                        <Text style={styles.addButtonText}>+</Text>
+                    </TouchableOpacity>
+                </View>
 
-          <TouchableOpacity
-            style={styles.addButtonGoal}
-            onPress={() => navigation.navigate('Goal')}
-          >
-            <Text style={styles.addButtonText}>G</Text>
-          </TouchableOpacity>
+                <View style={styles.taskListContainer}>
+                    <FlatList
+                        data={tasks}
+                        renderItem={renderTaskItem}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={styles.taskList}
+                    />
+                </View>
 
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setPopVisibility(true)}
-          >
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+                {sidebarVisible && (
+                    <Sidebar
+                        animationType='slide' 
+                        categories={cat}
+                        closeSidebar={closeSidebar} 
+                    />
+                )}
 
-        </View>
+                <Modal
+                    animationType='slide'
+                    visible={popVisible}
+                    onRequestClose={() => {
+                        setPopVisibility(!popVisible);
+                    }}
+                >
+                    <View style={styles.modalView}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Task"
+                            placeholderTextColor="#696969"
+                            value={task}
+                            onChangeText={(task) => setTask(task)}
+                        />
 
-        <View style={styles.taskListContainer}>
-          <FlatList
-            data={tasks}
-            renderItem={renderTaskItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.taskList}
-          />
-        </View>
+                        <DatePicker
+                            date={date}
+                            onDateChange={(date) => setDate(date)}
+                            mode="calendar"
+                            textColor="#FFFFFF"
+                            style={styles.datePicker}
+                        />
 
-        {sidebarVisible && (
-          <Sidebar
-            animationType='slide' 
-            categories={cat}
-            closeSidebar={closeSidebar} 
-          />
-        )}
+                        <View style={styles.row}>
+                            <Text style={styles.catText}> Category</Text>
+                            <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
+                                <Text style={styles.buttonCatText}>{selectedCategory || "None >"}</Text>
+                            </TouchableOpacity>
+                        </View>
 
-        <Modal
-          animationType='slide'
-          visible={popVisible}
-          onRequestClose={() => {
-            setPopVisibility(!popVisible);
-          }}
-        >
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              placeholder="Task"
-              placeholderTextColor="#696969"
-              value={task}
-              onChangeText={(task) => setTask(task)}
-            />
-            
-            <DatePicker
-              date={date}
-              onDateChange={(date) => setDate(date)}
-              mode="calendar"
-              textColor="#FFFFFF"
-              style={styles.datePicker}
-            />
+                        <TouchableOpacity onPress={handleAddTask} style={styles.button}>
+                            <Text style={styles.buttonText}>Add Task</Text>
+                        </TouchableOpacity>
 
-            <View style={styles.row}>
-              <Text style={styles.catText}> Category</Text>
-              <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
-                <Text style={styles.buttonCatText}>{selectedCategory || "None >"}</Text>
-              </TouchableOpacity>
-            </View>
+                        <TouchableOpacity style={styles.button} onPress={() => setPopVisibility(!popVisible)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
 
-            <TouchableOpacity onPress={handleAddTask} style={styles.button}>
-              <Text style={styles.buttonText}>Add Task</Text>
-            </TouchableOpacity>
+                <Modal
+                    animationType='slide'
+                    visible={popCat}
+                    onRequestClose={() => {
+                        setCatVisibility(!popCat);
+                    }}
+                >
+                    <View style={styles.modalView}>
+                        <FlatList
+                            data={cat}
+                            renderItem={renderCatItem}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={styles.catList}
+                        />
 
-            <TouchableOpacity style={styles.button} onPress={() => setPopVisibility(!popVisible)}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+                        <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
+                            <Text style={styles.buttonText}>Add Category</Text>
+                        </TouchableOpacity>
 
+                        <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
 
-        <Modal
-          animationType='slide'
-          visible={popCat}
-          onRequestClose={() => {
-            setPopVisibility(!popCat);
-          }}
-        >
-          <View style={styles.modalView}>
-            <FlatList
-              data = {cat}
-              renderItem={renderCatItem}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.catList}
-            />
+                <Modal
+                    animationType='slide'
+                    visible={popAddCat}
+                    onRequestClose={() => {
+                        setAddCatVisibility(!popAddCat);
+                    }}
+                >
+                    <View style={styles.modalView}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Category"
+                            placeholderTextColor="#696969"
+                            value={selectNewCat}
+                            onChangeText={(selectNewCat) => setSelectedNewCat(selectNewCat)}
+                        />
 
-            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(true)}>
-              <Text style={styles.buttonText}>Add Category</Text>
-            </TouchableOpacity>
+                        <TouchableOpacity onPress={addCat} style={styles.button}>
+                            <Text style={styles.buttonText}>Add Category</Text>
+                        </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => setCatVisibility(false)}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        <Modal
-          animationType='slide'
-          visible={popAddCat}
-          onRequestClose={() => {
-            setAddCatVisibility(!popAddCat);
-          }}
-        >
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              placeholder="Category"
-              placeholderTextColor="#696969"
-              value={selectNewCat}
-              onChangeText={(selectNewCat) => setSelectedNewCat(selectNewCat)}
-            />
-
-            <TouchableOpacity onPress={addCat} style={styles.button}>
-              <Text style={styles.buttonText}>Add Category</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(!popAddCat)}>
-              <Text style={styles.buttonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      </ImageBackground>
-    </SafeAreaView>
-  );
+                        <TouchableOpacity style={styles.button} onPress={() => setAddCatVisibility(!popAddCat)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </ImageBackground>
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -298,7 +293,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   datePicker: {
-    width:"118%",
+    width:"119%",
     marginVertical: 20,
     borderRadius: 20,
   },

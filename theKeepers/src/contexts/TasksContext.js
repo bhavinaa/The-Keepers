@@ -9,21 +9,13 @@ export const useTasks = () => useContext(TasksContext);
 
 export const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
-  const [todayTasks, setTodayTasks] = useState([]);
   const [tasksByCategory, setTasksByCategory] = useState([]);
   const [loading, setLoading] = useState(true);
   const { loggedInUser } = useAuth();
 
   useEffect(() => {
     if (loggedInUser?.email) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); 
-
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
       const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email),orderBy("completed", "asc"), orderBy("deadline", "asc"));
-      const s = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), where("deadline", ">=", today), where("deadline", "<", tomorrow));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const tasksData = [];
         querySnapshot.forEach((doc) => {
@@ -39,25 +31,9 @@ export const TasksProvider = ({ children }) => {
         setTasks(tasksData);
         setLoading(false);
       });
-      const getTaskForToday = onSnapshot(s, (querySnapshot) => {
-        const tasksData = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          tasksData.push({
-            id: doc.id,
-            title: data.title,
-            deadline: data.deadline.toDate(),
-            completed: data.completed || false,
-            category: data.category || ''
-          });
-        });
-        setTodayTasks(tasksData);
-        setLoading(false);
-      });
-
+      
       return () => {
         unsubscribe();
-        getTaskForToday();
       }
     }
   }, [loggedInUser]);
@@ -105,6 +81,7 @@ export const TasksProvider = ({ children }) => {
     if (!querySnapshot.empty) {
         const calendarDoc = querySnapshot.docs[0].ref; 
         await deleteDoc(calendarDoc);
+        console.log("deleted successfully")
     }
 };
 
@@ -132,7 +109,7 @@ const getTasksByCategory = async (cat) => {
 }
 
   return (
-    <TasksContext.Provider value={{ tasks, loading, toggleTaskCompletion, deleteTask, getTasksByCategory, tasksByCategory, todayTasks }}>
+    <TasksContext.Provider value={{ tasks, loading, toggleTaskCompletion, deleteTask, getTasksByCategory, tasksByCategory }}>
       {children}
     </TasksContext.Provider>
   );

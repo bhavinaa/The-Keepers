@@ -10,10 +10,11 @@ import TaskItem from '../components/TaskItem';
 import CatItem from '../components/CatItem';
 import Sidebar from '../components/Sidebar';
 import { AntDesign } from '@expo/vector-icons';
+import DatePicker from 'react-native-modern-datepicker';
 
 export default function TaskScreen({ navigation }) {
   const [task, setTask] = React.useState("");
-  const [date, setDate] = React.useState("");
+  const [date, setDate] = React.useState(new Date());
   const [popVisible, setPopVisibility] = React.useState(false);
   const [popCat, setCatVisibility] = React.useState(false);
   const [popAddCat, setAddCatVisibility] = React.useState(false);
@@ -23,46 +24,60 @@ export default function TaskScreen({ navigation }) {
   const { loggedInUser } = useAuth();
   const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
   const {cat, deleteCat} = useCat();
+  const [open, setOpen] = React.useState(false);
 
   const handleAddTask = async () => {
-    if (!validateDate(date)) {
-      alert('Please enter the date in yyyy-mm-dd format');
-      return;
+    const formattedDate = date.replace(/\//g, '-');
+    setDate(formattedDate)
+
+    if (!validateDate(formattedDate)) {
+        alert('Please select a valid date');
+        return;
     }
 
     try {
-      const docRef = await addDoc(collection(db, "todo"), {
-        email: loggedInUser?.email,
-        title: task,
-        completed: false, 
-        deadline: Timestamp.fromDate(new Date(date)),
-        category: selectedCategory
-      });
-      const calDocRef = await addDoc(collection(db, "calendar"), {
-        email: loggedInUser?.email,
-        title: task,
-        type: "Task",
-        taskId: docRef, 
-        deadline: Timestamp.fromDate(new Date(date)),
-        completion: false,
-      });
-      console.log("Document written with ID: ", docRef.id, selectedCategory);
-      setPopVisibility(false);
-      alert("Task added successfully!");
-      setTask("");
-      setDate("");
-      setSelectedCategory("");
-    } catch (error) {
-      console.error("Error adding document in taskscreen: ", error);
-      alert('Failed to add task');
-    }
+        const dateObject = new Date(formattedDate);
 
-  };
+        const docRef = await addDoc(collection(db, "todo"), {
+            email: loggedInUser?.email,
+            title: task,
+            completed: false,
+            deadline: Timestamp.fromDate(dateObject),
+            category: selectedCategory
+        });
+        const calDocRef = await addDoc(collection(db, "calendar"), {
+            email: loggedInUser?.email,
+            title: task,
+            type: "Task",
+            taskId: docRef.id,
+            deadline: Timestamp.fromDate(dateObject),
+            completion: false,
+        });
+        console.log("Document written with ID: ", docRef.id, selectedCategory);
+        setPopVisibility(false);
+        alert("Task added successfully!");
+        setTask("");
+        setDate(new Date());
+        setSelectedCategory("");
+    } catch (error) {
+        console.error("Error adding document in taskscreen: ", error);
+        alert('Failed to add task');
+    }
+};
 
   const validateDate = (date) => {
     const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-    return regex.test(date);
+    if (!regex.test(date)) {
+        return false;
+    }
+    const enteredDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return enteredDate > today;
   };
+
+
+
 
   const renderTaskItem = ({ item }) => (
     <TaskItem 
@@ -84,8 +99,6 @@ export default function TaskScreen({ navigation }) {
     deleteCat={deleteCat} 
     />
   );
-
-
 
   const addCat = async () => {
     if (selectNewCat == "") {
@@ -171,15 +184,16 @@ export default function TaskScreen({ navigation }) {
               value={task}
               onChangeText={(task) => setTask(task)}
             />
-
-            <TextInput
-              style={styles.input}
-              placeholder="yyyy-mm-dd"
-              placeholderTextColor="#696969"
-              value={date}
-              onChangeText={(date) => setDate(date)}
+            
+            <DatePicker
+              date={date}
+              onDateChange={(date) => setDate(date)}
+              mode="calendar"
+              textColor="#FFFFFF"
+              style={styles.datePicker}
             />
-            <View style = {styles.row}>
+
+            <View style={styles.row}>
               <Text style={styles.catText}> Category</Text>
               <TouchableOpacity onPress={() => setCatVisibility(true)} style={styles.buttonCat}>
                 <Text style={styles.buttonCatText}>{selectedCategory || "None >"}</Text>
@@ -195,6 +209,7 @@ export default function TaskScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </Modal>
+
 
         <Modal
           animationType='slide'
@@ -262,10 +277,10 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 40, 
+    paddingTop: 40,
     paddingHorizontal: 20,
     justifyContent: 'space-between',
-    marginTop: 35
+    marginTop: 35,
   },
   header: {
     fontSize: 28,
@@ -273,86 +288,89 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    height: 40,
+    height: 50,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    borderRadius: 10, 
-    borderColor: "white",
-    width: "100%",
-    color: "white"
+    borderRadius: 10,
+    borderColor: 'white',
+    width: '100%',
+    color: 'white',
+  },
+  datePicker: {
+    marginVertical: 20,
+    borderRadius: 20,
   },
   button: {
-    backgroundColor: "#302298",
+    backgroundColor: '#302298',
     borderRadius: 20,
-    padding: 10,
     margin: 14,
-    width: "100%",
+    width: '100%',
     height: 50,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonCat: {
     borderWidth: 1,
-    borderRadius: 10, 
-    borderColor: "white", 
-    width: "auto"
+    borderRadius: 10,
+    borderColor: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: '#fffff0',
     textAlign: 'center',
   },
   buttonCatText: {
-    color: "white", 
+    color: 'white',
     fontSize: 20,
-    paddingBottom: 5, 
-    paddingTop:5,
-    paddingLeft: 10, 
-    paddingRight: 10
   },
   addButton: {
-    backgroundColor: "#302298",
+    backgroundColor: '#302298',
     width: 50,
-    height: 50, 
+    height: 50,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
   addButtonGoal: {
-    backgroundColor: "#302298",
+    backgroundColor: '#302298',
     width: 50,
-    height: 50, 
+    height: 50,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
   addButtonText: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: '#fffff0',
     textAlign: 'center',
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#333333",
+    backgroundColor: '#333333',
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
-        width: 0,
-        height: 2
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
+    height: 'auto',
+    width: '90%',
+    alignSelf: 'center',
   },
   taskListContainer: {
     height: '100%',
     width: '100%',
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   taskList: {
     padding: 20,
@@ -360,18 +378,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%'
+    width: '100%',
   },
   catText: {
-    color: "white", 
+    color: 'white',
     fontSize: 20,
-    fontWeight: "bold",
-    paddingBottom: 5, 
+    fontWeight: 'bold',
+    paddingBottom: 5,
     paddingTop: 5,
-  }, 
+  },
   catList: {
     height: 'auto',
     width: 'auto',
-    paddingBottom: 20
-  }
+    paddingBottom: 20,
+  },
 });

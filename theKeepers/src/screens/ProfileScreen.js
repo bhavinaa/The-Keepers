@@ -79,8 +79,8 @@ export default function ProfileScreen({ navigation }) {
 
   const animateLevelUp = () => {
     Animated.sequence([
-      Animated.timing(levelUpAnimation, { toValue: 1, duration: 1000, useNativeDriver: true }),
-      Animated.timing(levelUpAnimation, { toValue: 0, duration: 1000, useNativeDriver: true })
+      Animated.timing(levelUpAnimation, { toValue: 1, duration: 3000, useNativeDriver: true }),
+      Animated.timing(levelUpAnimation, { toValue: 0, duration: 3000, useNativeDriver: true })
     ]).start();
   };
 

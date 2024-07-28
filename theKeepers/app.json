@@ -18,6 +18,12 @@
     },
     "ios": {
       "bundleIdentifier": "com.thekeepers.test02"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3d74d242-7c14-4313-befe-b90f0bba69fb"
     }
   },
   "name": "test02"

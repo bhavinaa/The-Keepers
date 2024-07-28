@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, FlatList, TextInput, StyleSheet } from 'react-native';
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { Modal } from 'react-native-paper'; // prefer this as importing from React Native covers the whole screen
+import { Modal } from 'react-native-paper';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { useGoal } from '../contexts/GoalContext';
 import GoalItem from '../components/GoalItem';
+import DatePicker from 'react-native-modern-datepicker';
 
 export default function GoalScreen({ navigation }) {
     const [popVisible, setPopVisibility] = React.useState(false);
@@ -18,10 +19,14 @@ export default function GoalScreen({ navigation }) {
     const { goal, deleteGoal, toggleReminder } = useGoal();
     
     const handleAddGoal = async () => {
-        if (!validateDate(date)) {
-            alert('Please enter the date in yyyy-mm-dd format, and ensure it is after today');
+        const formattedDate = date.replace(/\//g, '-');
+        setDate(formattedDate);
+
+        if (!validateDate(formattedDate)) {
+            alert('Please select a valid date');
             return;
         }
+
         if (selectedReminder === "") {
             setSelectedReminder("Never");
         }
@@ -58,7 +63,7 @@ export default function GoalScreen({ navigation }) {
                     deadline: Timestamp.fromDate(new Date(date)),
                     completion: false,
                 });
-                console.log("added goal in calendar")
+                console.log("added goal in calendar");
             }
             setTitle("");
             setDescription("");
@@ -71,9 +76,7 @@ export default function GoalScreen({ navigation }) {
         }
     };
     
-    
-
-    const handleAddReminder = async(re) => {
+    const handleAddReminder = async (re) => {
         setSelectedReminder(re);
         setReVisibilitty(false);
     };
@@ -135,22 +138,35 @@ export default function GoalScreen({ navigation }) {
         
         return reminderDates;
     };
-    
-    
 
+    const renderButtons = () => {
+        if (!popVisible && !reVisible) {
+            return (
+                <>
+                    <TouchableOpacity onPress={() => setPopVisibility(true)} style={styles.addButton}>
+                        <Text style={styles.buttonText}>+</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("Task")} style={styles.backButton}>
+                        <Text style={styles.buttonText}>back</Text>
+                    </TouchableOpacity>
+                </>
+            );
+        }
+        return null;
+    };
 
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground source={require('../assets/the_background.png')} resizeMode='cover' style={styles.image}>
-            <View style={styles.goalListContainer}>
-                <Text style= {styles.header}>Goal</Text>
-                <FlatList
-                    data={goal}
-                    renderItem={renderGoalItem}
-                    keyExtractor={(item) => item.id}
-                    contentContainerStyle={styles.goalList}
-                />
-            </View>
+                <View style={styles.goalListContainer}>
+                    <Text style={styles.header}>Goal</Text>
+                    <FlatList
+                        data={goal}
+                        renderItem={renderGoalItem}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={styles.goalList}
+                    />
+                </View>
                 <Modal
                     animationType='slide'
                     visible={popVisible}
@@ -175,12 +191,12 @@ export default function GoalScreen({ navigation }) {
                             onChangeText={(description) => setDescription(description)}
                         />
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Deadline"
-                            placeholderTextColor="#696969"
-                            value={date}
-                            onChangeText={(date) => setDate(date)}
+                        <DatePicker
+                            date={date}
+                            onDateChange={(date) => setDate(date)}
+                            mode="calendar"
+                            textColor="#FFFFFF"
+                            style={styles.datePicker}
                         />
 
                         <View style={styles.row}>
@@ -229,13 +245,8 @@ export default function GoalScreen({ navigation }) {
                         </TouchableOpacity>
                     </View>
                 </Modal>
-                <TouchableOpacity onPress={() => setPopVisibility(true)} style={styles.addButton}>
-                    <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => navigation.navigate("Task")} style={styles.backButton}>
-                    <Text style={styles.buttonText}>back</Text>
-                </TouchableOpacity>
+                {renderButtons()}
             </ImageBackground>
         </SafeAreaView>
     );
@@ -244,7 +255,7 @@ export default function GoalScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignContent:"flex-start"
+        alignContent: "flex-start"
     },
     image: {
         flex: 1,
@@ -253,14 +264,14 @@ const styles = StyleSheet.create({
     goalListContainer: {
         height: '100%',
         width: '100%',
-        paddingBottom:40
+        paddingBottom: 40
     },
-    header:{
+    header: {
         fontSize: 28,
         fontWeight: 'bold',
         color: '#FFFFFF',
         textAlign: 'center',
-        textAlignVertical:"top",
+        textAlignVertical: "top",
         marginTop: 40,
     },
     goalList: {
@@ -290,6 +301,10 @@ const styles = StyleSheet.create({
         borderColor: "white",
         width: "100%",
         color: "white"
+    },
+    datePicker: {
+        marginVertical: 20,
+        borderRadius: 20,
     },
     row: {
         flexDirection: 'row',
@@ -322,7 +337,7 @@ const styles = StyleSheet.create({
         color: "white", 
         fontSize: 20,
         paddingBottom: 5, 
-        paddingTop:5,
+        paddingTop: 5,
         paddingLeft: 10, 
         paddingRight: 10
     },
@@ -358,6 +373,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         paddingBottom: 5, 
-        paddingTop:5,
+        paddingTop: 5,
     }
 });

@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   datePicker: {
-    width:"118%",
+    width:"119%",
     marginVertical: 20,
     borderRadius: 20,
   },

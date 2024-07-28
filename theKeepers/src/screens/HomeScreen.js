@@ -3,16 +3,15 @@ import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, StyleSheet
 import { useAuth } from "../contexts/AuthContext";
 import { useTasks } from "../contexts/TasksContext";
 import TaskItem from '../components/TaskItem';
-import { authentication, db } from "../firebase/config";
-import { signOut } from "firebase/auth";
-import Feather from 'react-native-vector-icons/Feather';
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../firebase/config";
+import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
 
 export default function HomeScreen({ navigation }) {
   const { loggedInUser } = useAuth();
   const { toggleTaskCompletion, deleteTask } = useTasks();
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     if (loggedInUser?.email) {
@@ -27,6 +26,18 @@ export default function HomeScreen({ navigation }) {
         where("deadline", ">=", today),
         where("deadline", "<", tomorrow)
       );
+
+      const unsubscribeUsername = onSnapshot(doc(db, 'Users', loggedInUser?.email), (doc) => {
+        if (doc.exists()) {
+          const userData = doc.data();
+          setUsername(userData?.username || 'Stargazer');
+        } else {
+          setUsername('Stargazer');
+        }
+      }, (error) => {
+        console.error("Error fetching user document:", error);
+        setUsername('Stargazer');
+      });
 
       const unsubscribe = onSnapshot(tasksQuery, (querySnapshot) => {
         const tasksData = [];
@@ -44,7 +55,10 @@ export default function HomeScreen({ navigation }) {
         setLoading(false);
       });
 
-      return () => unsubscribe();
+      return () => { 
+        unsubscribe();
+        unsubscribeUsername();
+      }
     }
   }, [loggedInUser]);
 
@@ -60,7 +74,7 @@ export default function HomeScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ImageBackground source={require('../assets/the_background.png')} resizeMode="cover" style={styles.image}>
         <View style={styles.overlay}>
-          <Text style={styles.welcomeText}>Welcome, Stargazer</Text>
+          <Text style={styles.welcomeText}>Welcome, {username}</Text>
           <View style={styles.gridContainer}>
             <View style={styles.grid}>
               <TouchableOpacity onPress={() => navigation.navigate('Task')} style={styles.button}>

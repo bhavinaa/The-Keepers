@@ -1,11 +1,5 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import App from '../App';
-
-// Mock the getFocusTip function from firebase/openAI
-jest.mock('../firebase/openAI', () => ({
-  getFocusTip: jest.fn().mockResolvedValue('Mock Focus Tip'),
-}));
 
 describe('Pomodoro Timer', () => {
   test('renders the timer and buttons correctly', () => {

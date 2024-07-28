@@ -9,6 +9,16 @@ import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { profilepic } from '../assets/profilepic';
 import { ProgressBar } from 'react-native-paper';
 
+/**
+ * The ProfileScreen component is responsible for displaying the user's profile information,
+ * including their profile picture, username, email, points, level, and progress to the next level.
+ * It also provides options to sign out and edit the profile.
+ *
+ * @param {Object} navigation - The navigation object provided by React Navigation.
+ * @returns {JSX.Element} - The ProfileScreen component.
+ */
+
+
 export default function ProfileScreen({ navigation }) {
   const { loggedInUser, setLoggedInUser } = useAuth(); 
   const [username, setUsername] = useState('');

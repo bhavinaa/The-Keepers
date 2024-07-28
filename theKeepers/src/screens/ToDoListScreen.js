@@ -5,10 +5,23 @@ import { View, Text, SafeAreaView, Pressable, FlatList, TextInput, ActivityIndic
 import { MaterialIcons } from '@expo/vector-icons';
 import { useToDoList } from '../contexts/ToDoListContext'; 
 
+/**
+ * The main screen component for displaying and managing a to-do list.
+ *
+ * @returns {JSX.Element} - The JSX element for the ToDoListScreen component.
+ */
+
+
 export default function ToDoListScreen() {
   const [title, setTitle] = useState("");
   const { toDoList, loading, addToDoList, deleteToDoListItem } = useToDoList();
 
+
+  /**
+   * Handles adding a new to-do item to the list.
+   *
+   * @returns {void}
+   */
   const handleAddToDo = () => {
     if (title.trim()) {
       addToDoList(title.trim());

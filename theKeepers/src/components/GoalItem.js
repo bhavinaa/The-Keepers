@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Dimensions } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -32,6 +32,9 @@ class GoalItem extends PureComponent {
 
         const formattedDeadline = this.formatDate(goal.deadline);
 
+        // Get screen height
+        const screenHeight = Dimensions.get('window').height;
+
         return (
             <Swipeable
                 renderRightActions={() => (
@@ -56,13 +59,13 @@ class GoalItem extends PureComponent {
                     onRequestClose={() => this.setPopVisibility(false)}
                 >
                     <View style={styles.modalOverlay}>
-                        <View style={styles.modalView}>
+                        <View style={[styles.modalView, { height: screenHeight * 0.7 }]}>
                             <Text style={styles.modalTitle}>{goal.title}</Text>
                             <Text style={styles.modalContent}>Description:</Text>
                             <Text style={styles.modalContent}>{goal.des}</Text>
                             <Text style={styles.modalContent}>Deadline: {formattedDeadline}</Text>
                             <Text style={styles.modalContent}>Reminder: {goal.reminder}</Text>
-                            <View style={styles.reminderContainer}>
+                            <ScrollView style={styles.reminderContainer}>
                                 {goal.reminderDates.map((rem, index) => {
                                     const formattedDate = this.formatRem(rem.date);
                                     return (
@@ -78,7 +81,7 @@ class GoalItem extends PureComponent {
                                         </View>
                                     );
                                 })}
-                            </View>
+                            </ScrollView>
                             <TouchableOpacity
                                 style={styles.closeButton}
                                 onPress={() => this.setPopVisibility(false)}
@@ -182,3 +185,4 @@ const styles = StyleSheet.create({
 });
 
 export default GoalItem;
+

@@ -87,7 +87,7 @@ export const TasksProvider = ({ children }) => {
 
 const getTasksByCategory = async (cat) => {
   if (loggedInUser?.email) {
-    const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), where("category", "==", cat));
+    const q = query(collection(db, "todo"), where("email", "==", loggedInUser?.email), where("category", "==", cat), orderBy("completed", "asc"), orderBy("deadline", "asc") );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const tasksData = [];
       querySnapshot.forEach((doc) => {

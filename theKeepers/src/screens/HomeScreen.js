@@ -27,17 +27,19 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     if (loggedInUser?.email) {
       const today = new Date();
-      const singaporeOffset = 8 * 60;
-      const singaporeTime = new Date(today.getTime() + (singaporeOffset - today.getTimezoneOffset()) * 60000);
-      singaporeTime.setDate(singaporeTime.getDate() - 1);
-      singaporeTime.setHours(8, 0, 0, 0);
-      console.log("Singapore Time 8 AM (Today Day):", singaporeTime);
-
-      const tasksQuery = query(
+    const singaporeOffset = 8 * 60;
+    const singaporeTime = new Date(today.getTime() + (singaporeOffset - today.getTimezoneOffset()) * 60000);
+    console.log("Singapore Time Now:", singaporeTime);
+    singaporeTime.setDate(singaporeTime.getDate() - 1);
+    singaporeTime.setHours(8, 0, 0, 0);
+    
+    console.log("Final Singapore Time (Previous Day 08:00 AM):", singaporeTime);
+    
+    const tasksQuery = query(
         collection(db, "todo"),
         where("email", "==", loggedInUser?.email),
         where("deadline", "==", singaporeTime)
-      );
+    );
 
       const unsubscribeUsername = onSnapshot(doc(db, 'Users', loggedInUser?.email), (doc) => {
         if (doc.exists()) {

@@ -1,14 +1,8 @@
-Here's a revised format for your documentation:
-
----
-
 # The Keepers - Boost Your Productivity, Ignite Your Motivation, Sharpen Your Focus
 
 ## Team Name: The Keepers
 **Members:** Bhavina and Sahana  
 **Proposed Level of Achievement:** Apollo 11
-
----
 
 ## Table of Contents
 
@@ -177,11 +171,12 @@ The app aims to address common struggles among students, including:
 - Install the Expo Go app on your phone.
 
 ### For Android Users Only
-![image](https://github.com/user-attachments/assets/4d0c4076-fa41-459c-98e9-c3292a2b0940)
+![image]![image](https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63)
+
 
 For Android users, you can scan this link or click the link below to open the app in the Expo Go app:
 
-[Open in Expo Go](https://expo.dev/preview/update?message=Merge%20branch%20'main'%20of%20github.com%3Abhavinaa%2FThe-Keepers&updateRuntimeVersion=1.0.0&createdAt=2024-07-28T22%3A20%3A32.358Z&slug=exp&projectId=3d74d242-7c14-4313-befe-b90f0bba69fb&group=d252c6fd-9f9b-4a1e-af1d-5dcbb2baa879)
+[Open in Expo Go]https://expo.dev/preview/update?message=Update%20README%20to%20include%20the%20latest%20details%20for%20milestone%203&updateRuntimeVersion=1.0.0&createdAt=2024-07-29T03%3A23%3A48.479Z&slug=exp&projectId=3d74d242-7c14-4313-befe-b90f0bba69fb&group=c62a12c7-6cd4-463b-b832-5bd681ec3ca5
 
 ### IDE / Code Editor Setup
 1. Clone the repository.
@@ -205,3 +200,11 @@ For Android users, you can scan this link or click the link below to open the ap
 
 ### Submission Documents 
 - Documentation
+https://docs.google.com/document/d/1gXiRSdGI5auEnxjJfm7tzbP36poShN_hkn9LmrYUS0A/edit?usp=sharing
+
+- time Log
+
+
+- Poster
+
+- Video 

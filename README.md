@@ -151,7 +151,7 @@ The app aims to address common struggles among students, including:
 - Required software, hardware, and environment setup.
 - Install the Expo Go app on your phone.
 
-### For Android Users Only
+### For Android and IOS Users 
 
 <img src="https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63" alt="QR Code" width="150" height="150" />
 

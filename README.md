@@ -153,10 +153,12 @@ The app aims to address common struggles among students, including:
 
 ### For Android Users Only
 
-![QR Code](https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63)  
+<img src="https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63" alt="QR Code" width="150" height="150" />
+
 *Scan this QR code or click the link below to open the app in the Expo Go app:*
 
 [Open in Expo Go](https://expo.dev/preview/update?message=Update%20README%20to%20include%20the%20latest%20details%20for%20milestone%203&updateRuntimeVersion=1.0.0&createdAt=2024-07-29T03%3A23%3A48.479Z&slug=exp&projectId=3d74d242-7c14-4313-befe-b90f0bba69fb&group=c62a12c7-6cd4-463b-b832-5bd681ec3ca5)
+
 
 ### IDE / Code Editor Setup
 1. Clone the repository.

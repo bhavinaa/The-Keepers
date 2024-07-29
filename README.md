@@ -184,7 +184,7 @@ ables
 
 ### Submission Documents 
 - [Documentation](https://docs.google.com/document/d/1gXiRSdGI5auEnxjJfm7tzbP36poShN_hkn9LmrYUS0A/edit?usp=sharing)
-- Time Log
+- [Time Log] (https://docs.google.com/document/d/1i1bh-S4FB0pRhvZBxlo0Tn20DqdTDJ5Z8td5FR2GKrM/edit?usp=sharing)
 - Poster
 - Video
 

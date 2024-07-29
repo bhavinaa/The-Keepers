@@ -168,7 +168,7 @@ The app aims to address common struggles among students, including:
 5. Run `npx expo start` to start the project in development mode.
 
 ### Test Account
-- **Email:** abc4@gmail.com
+- **Email:** abc5@gmail.com
 - **Password:** 123456
 - You can also sign up for a new account if needed.
 

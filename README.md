@@ -67,7 +67,7 @@ The app aims to address common struggles among students, including:
 - **Task Organization and Checklist**
   - **Description:** Users can organize tasks into categories and create checklists for each task.
   - **Functionality:**
-    - Group tasks by categories (e.g., workout, study). [Milestone 3]
+    - Group tasks by categories (e.g., workout, study).
     - Create and manage personalized checklists for each task.
   - **Technical Implementation:**
     - **Frontend:** Task and checklist creation UI, category filters.
@@ -85,7 +85,7 @@ The app aims to address common struggles among students, including:
 - **Calendar Integration**
   - **Purpose:** Helps users manage their schedule by integrating tasks with their calendar.
   - **Functionality:** Users can add tasks to their calendar, view upcoming tasks, and receive reminders.
-  - **Interactions:** Syncs task data with a calendar service (e.g., Google Calendar) using Firebase Cloud Functions if needed for complex logic.
+  - **Interactions:** Syncs task data with a calendar service 
 
 - **Profile Screen**
   - **Purpose:** Displays user information and allows users to update their profile.
@@ -109,15 +109,6 @@ The app aims to address common struggles among students, including:
     - **Frontend:** Form inputs for goal setting, progress tracking UI components.
     - **Backend:** Store goals and progress data in Firestore, update progress based on user input.
 
-- **Study Group and Pomodoro Technique**
-  - **Description:** Allows users to form study groups for collaborative tasks and extra points, integrating the Pomodoro technique.
-  - **Functionality:**
-    - Form study groups for collaboration.
-    - Use the Pomodoro technique for group study sessions with customizable intervals.
-  - **Technical Implementation:**
-    - **Frontend:** Group creation and management UI, Pomodoro timer integration.
-    - **Backend:** Store group data in Firestore, track group sessions.
-
 ### Firebase Services
 
 1. **Firebase Authentication**
@@ -129,16 +120,6 @@ The app aims to address common struggles among students, including:
    - **Purpose:** Stores and manages all app data, including user profiles, tasks, and timer sessions.
    - **Functionality:** Provides real-time data synchronization and offline capabilities.
    - **Interactions:** Interfaces with the User Interface to read and write data, ensuring up-to-date information is available across all devices.
-
-3. **Firebase Cloud Functions (Optional)**
-   - **Purpose:** Executes server-side logic for complex operations and integrations.
-   - **Functionality:** Handles tasks like syncing with external services (e.g., Google Calendar), processing data, and sending notifications.
-   - **Interactions:** Triggered by Firebase events (e.g., database writes) and communicates with Firebase Realtime Database / Firestore and external APIs.
-
-4. **Firebase Cloud Messaging (Optional)**
-   - **Purpose:** Sends push notifications to users.
-   - **Functionality:** Provides APIs to send notifications for reminders, task deadlines, and motivational messages.
-   - **Interactions:** Integrates with the User Interface to deliver notifications based on user preferences and actions.
 
 ---
 
@@ -171,12 +152,11 @@ The app aims to address common struggles among students, including:
 - Install the Expo Go app on your phone.
 
 ### For Android Users Only
-![image]![image](https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63)
 
+![QR Code](https://github.com/user-attachments/assets/55b32c3c-5ca4-45a3-850d-024cc4cb7b63)  
+*Scan this QR code or click the link below to open the app in the Expo Go app:*
 
-For Android users, you can scan this link or click the link below to open the app in the Expo Go app:
-
-[Open in Expo Go]https://expo.dev/preview/update?message=Update%20README%20to%20include%20the%20latest%20details%20for%20milestone%203&updateRuntimeVersion=1.0.0&createdAt=2024-07-29T03%3A23%3A48.479Z&slug=exp&projectId=3d74d242-7c14-4313-befe-b90f0bba69fb&group=c62a12c7-6cd4-463b-b832-5bd681ec3ca5
+[Open in Expo Go](https://expo.dev/preview/update?message=Update%20README%20to%20include%20the%20latest%20details%20for%20milestone%203&updateRuntimeVersion=1.0.0&createdAt=2024-07-29T03%3A23%3A48.479Z&slug=exp&projectId=3d74d242-7c14-4313-befe-b90f0bba69fb&group=c62a12c7-6cd4-463b-b832-5bd681ec3ca5)
 
 ### IDE / Code Editor Setup
 1. Clone the repository.
@@ -196,15 +176,20 @@ For Android users, you can scan this link or click the link below to open the ap
 
 ---
 
-## 5. Milestone Deliverables
+## 5. Milestone Deliver
+
+ables
 
 ### Submission Documents 
-- Documentation
-https://docs.google.com/document/d/1gXiRSdGI5auEnxjJfm7tzbP36poShN_hkn9LmrYUS0A/edit?usp=sharing
-
-- time Log
-
-
+- [Documentation](https://docs.google.com/document/d/1gXiRSdGI5auEnxjJfm7tzbP36poShN_hkn9LmrYUS0A/edit?usp=sharing)
+- Time Log
 - Poster
+- Video
 
-- Video 
+---
+
+## 6. Revision History
+
+| Date       | Version | Changes                                 |
+|------------|---------|-----------------------------------------|
+| 2024-07-29 | 1.0     | Initial release of README file           |
